@@ -42,8 +42,11 @@ service StanfordCoreNLP
     list<string> resolve_coreferences_in_tokenized_sentences(1:list<string> sentencesWithTokensSeparatedBySpace),
     list<string> resolve_coreferences_in_trees(1:list<string> trees),
     list<string> evaluate_tregex_pattern(1:string parseTree, 2:string tregexPattern),
+    // pos tagging methods
     list<list<TaggedToken>> tag_text(1:string untokenizedText),
     list<TaggedToken> tag_tokenized_sentence(1:list<string> tokenizedSentence),
+    list<TaggedToken> tag_partially_tagged_tokenized_sentence(1:list<TaggedToken> ptaggedtokenizedSentence)
+    // end of pos tagging methods
     string untokenize_sentence(1:list<string> sentenceTokens),
     list<list<string>> tokenize_text(1:string arbitraryText),
     ParseTree sr_parse_tagged_sentence(1:string taggedSentence, 2:list<string> outputFormat, 3:string divider),
