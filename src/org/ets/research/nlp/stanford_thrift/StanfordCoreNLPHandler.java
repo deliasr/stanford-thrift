@@ -214,6 +214,13 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
     {
         return tagger.tag_tokenized_sentence(tokenizedSentence);
     }
+
+    public List<TaggedToken> tag_partially_tagged_tokenized_sentence
+            (List<String> tokenizedSentence, String divider)
+    {
+        return tagger.tag_partially_tagged_tokenized_sentence
+                (tokenizedSentence, divider);
+    }
     /* End Stanford Tagger methods */
 
 

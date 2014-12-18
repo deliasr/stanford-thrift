@@ -65,6 +65,35 @@ public class StanfordTaggerThrift
     	List<CoreLabel> crazyStanfordFormat = Sentence.toCoreLabelList(tokenArray);
     	return tagSingleSentence(crazyStanfordFormat);
 	}
+
+    public List<TaggedToken> tag_partially_tagged_tokenized_sentence
+            (String tokenizedPTaggedSentence, String divider)
+    {
+
+        List<TaggedWords> pTaggedSentence = CoreNLPThriftUtil
+        .getListOfTaggedWordsFromTaggedSentence
+                (tokenizedPTaggedSentence, divider)
+
+        return tagSingleSentencePTags(pTaggedSentence);
+    }
+
+    private List<TaggedToken> tagSingleSentencePTags(List<? extends HasWord>
+                                                         stanfordFormat)
+    {
+        // reuse the provided tags
+        List<TaggedWord> outputFromTagger = tagger.tagSentence(stanfordFormat,
+                true);
+        List<TaggedToken> taggedSentence = new ArrayList<TaggedToken>();
+        for (TaggedWord tw : outputFromTagger)
+        {
+            TaggedToken token = new TaggedToken();
+            token.tag = tw.tag();
+            token.token = tw.word();
+            taggedSentence.add(token);
+        }
+
+        return taggedSentence;
+    }
 	
 	private List<TaggedToken> tagSingleSentence(List<? extends HasWord> stanfordFormat)
 	{
