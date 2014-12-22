@@ -30,6 +30,7 @@ tokenized_sentences = ["Barack Hussein Obama II is the 44th and current Presiden
 
 arbitrary_text = u"Barack Hussein Obama II is the 44th and current President of the United States, in office since 2009.  He is the first African American to hold the office.  Born in Honolulu, Hawaii, Obama is a graduate of Columbia University and Harvard Law School, where he was president of the Harvard Law Review.  He was a community organizer in Chicago before earning his law degree.  He worked as a civil rights attorney in Chicago and taught constitutional law at the University of Chicago Law School from 1992 to 2004.  He served three terms representing the 13th District in the Illinois Senate from 1997 to 2004, running unsuccessfully for the United States House of Representatives in 2000."
 
+p_tokenized_sentences = [u"What_A a_B day_C"]
 
 transport = TSocket.TSocket(server, port)
 transport = TTransport.TBufferedTransport(transport)
@@ -51,6 +52,11 @@ try:
         result = client.tag_tokenized_sentence(sentence.split(" "))
         print result
         print
+
+    for sentence in p_tokenized_sentences:
+        print sentence
+        result = client.tag_partially_tagged_tokenized_sentence(sentence, "_")
+        print result
 
 except Exception as e:
     print e

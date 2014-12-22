@@ -18,11 +18,14 @@ package org.ets.research.nlp.stanford_thrift;
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import CoreNLP.NamedEntity;
+import CoreNLP.ParseTree;
+import CoreNLP.StanfordCoreNLP;
+import CoreNLP.TaggedToken;
+import edu.stanford.nlp.ling.TaggedWord;
+import edu.stanford.nlp.pipeline.Annotation;
 import org.apache.thrift.TApplicationException;
+import org.apache.thrift.TException;
 import org.ets.research.nlp.stanford_thrift.coref.StanfordCorefThrift;
 import org.ets.research.nlp.stanford_thrift.general.CoreNLPThriftConfig;
 import org.ets.research.nlp.stanford_thrift.general.CoreNLPThriftUtil;
@@ -33,12 +36,9 @@ import org.ets.research.nlp.stanford_thrift.tagger.StanfordTaggerThrift;
 import org.ets.research.nlp.stanford_thrift.tokenizer.StanfordTokenizerThrift;
 import org.ets.research.nlp.stanford_thrift.tregex.StanfordTregexThrift;
 
-import CoreNLP.NamedEntity;
-import CoreNLP.ParseTree;
-import CoreNLP.StanfordCoreNLP;
-import CoreNLP.TaggedToken;
-import edu.stanford.nlp.ling.TaggedWord;
-import edu.stanford.nlp.pipeline.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
@@ -215,12 +215,12 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
         return tagger.tag_tokenized_sentence(tokenizedSentence);
     }
 
-    public List<TaggedToken> tag_partially_tagged_tokenized_sentence
-            (List<String> tokenizedSentence, String divider)
-    {
+    @Override
+    public List<TaggedToken> tag_partially_tagged_tokenized_sentence(String ptaggedtokenizedSentence, String divider) throws TException {
         return tagger.tag_partially_tagged_tokenized_sentence
-                (tokenizedSentence, divider);
+                (ptaggedtokenizedSentence, divider);
     }
+
     /* End Stanford Tagger methods */
 
 

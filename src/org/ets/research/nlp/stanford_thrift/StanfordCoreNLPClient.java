@@ -1,34 +1,35 @@
 package org.ets.research.nlp.stanford_thrift;
 // Generated code
-import CoreNLP.*;
-
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.util.List;
-
-
+import CoreNLP.ParseTree;
+import CoreNLP.StanfordCoreNLP;
+import CoreNLP.TaggedToken;
 import org.apache.thrift.TException;
-import org.apache.thrift.transport.TTransport;
-import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.transport.TSocket;
+import org.apache.thrift.transport.TTransport;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
 
 public class StanfordCoreNLPClient {
 
-    public static void main(String [] args) {
+    public static void main(String [] args) throws Exception {
 
         String server = "";
         Integer port = 0;
         String inputFilename = "";
 
-        if (args.length == 3) {
+        if (args.length == 4) {
             server = args[0];
             port = Integer.parseInt(args[1]);
             inputFilename = args[2];
         }
         else {
-            System.err.println("Usage: StanfordCoreNLPClient <server> <port> <inputfile>");
+            System.err.println("Usage: StanfordCoreNLPClient <server> <port> " +
+                    "<inputfile>");
             System.exit(2);
         }
 
@@ -48,7 +49,8 @@ public class StanfordCoreNLPClient {
         }
     }
 
-    private static void perform(StanfordCoreNLP.Client client, String inputFilename) throws TException
+    private static void perform(StanfordCoreNLP.Client client, String
+            inputFilename) throws Exception
     {
         FileReader infile = null;
 
@@ -57,11 +59,22 @@ public class StanfordCoreNLPClient {
             BufferedReader in = new BufferedReader(infile);
             while (in.ready()) {
                 String sentence = in.readLine();
+
+                // parse tree
                 List<ParseTree> trees = client.parse_text(sentence, null);
                 for (ParseTree tree : trees)
                 {
                     System.out.println(tree.tree);
                 }
+
+                // partial tagged text
+                List<TaggedToken> tokens = client.tag_partially_tagged_tokenized_sentence(sentence, "_");
+
+                for (TaggedToken tok : tokens)
+                {
+                    System.out.println(tok.getToken() + " " + tok.getTag());
+                }
+
             }
             in.close();
         }
