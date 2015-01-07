@@ -20,15 +20,6 @@
 
 package org.ets.research.nlp.stanford_thrift.parser;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Function;
-
-import org.apache.thrift.TApplicationException;
-import org.ets.research.nlp.stanford_thrift.general.CoreNLPThriftUtil;
-
 import CoreNLP.ParseTree;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.HasWord;
@@ -38,10 +29,17 @@ import edu.stanford.nlp.pipeline.DefaultPaths;
 import edu.stanford.nlp.process.DocumentPreprocessor;
 import edu.stanford.nlp.trees.PennTreebankLanguagePack;
 import edu.stanford.nlp.trees.Tree;
-import edu.stanford.nlp.trees.TreeFunctions;
 import edu.stanford.nlp.trees.TreePrint;
 import edu.stanford.nlp.trees.TreebankLanguagePack;
-import edu.stanford.nlp.trees.Trees;
+import org.apache.thrift.TApplicationException;
+import org.ets.research.nlp.stanford_thrift.general.CoreNLPThriftUtil;
+
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+//import java.util.function.Function;
 
 public class StanfordParserThrift
 {
@@ -142,7 +140,11 @@ public class StanfordParserThrift
      * NOTE that this WILL re-lexicalize a pre-lexicalized tree, so don't pass in a tree that
      * has been lexicalized and expect to get back the same thing as what you passed in.
      */
-    public String lexicalize_parse_tree(String tree) throws TApplicationException
+
+    // remove for now as it requires Java 8
+    /*
+    public String lexicalize_parse_tree(String tree) throws
+            TApplicationException
     {
         try
         {
@@ -159,5 +161,6 @@ public class StanfordParserThrift
             throw new TApplicationException(TApplicationException.INTERNAL_ERROR, e.getMessage());
         }
     }
+    */
 }
 

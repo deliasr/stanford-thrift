@@ -133,10 +133,13 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
         return parser.parse_tagged_sentence(taggedSentence, outputFormat, divider);
     }
 
+    // remove for now as it requires Java 8
+    /*
     public String lexicalize_parse_tree(String tree) throws TApplicationException
     {
         return parser.lexicalize_parse_tree(tree);
     }
+    */
     /* End Stanford Parser methods */
 
 
