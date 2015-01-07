@@ -3,7 +3,7 @@
   <description>Stanford CoreNLP Wrapper</description>
 
   <property name="src" location="src" />
-  <property name="genjava" location="gen-java" />
+  <property name="genjava" location="src" />
   <property name="genpy" location="gen-py" />
   <property name="build" location="build" />
   <property environment="env"/>
