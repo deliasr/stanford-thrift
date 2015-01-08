@@ -3,10 +3,11 @@
 *.iml
 
 .env
-stanford-corenlp-wrapper
-gen-py
-gen-java
-gen-py-original
-gen-java-original
-out-java
-stanford-corenlp-3.5.0-models
+
+*.jar
+genpy
+src/CoreNLP
+
+target
+
+
