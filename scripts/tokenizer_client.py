@@ -26,7 +26,13 @@ tokenized_sentences = ["Barack Hussein Obama II is the 44th and current Presiden
                        u"Born in Honolulu , Hawaii , Obama is a graduate of Columbia University and Harvard Law School , where he was president of the Harvard Law Review .",
                        u"He was a community organizer in Chicago before earning his law degree .",
                        u"He worked as a civil rights attorney in Chicago and taught constitutional law at the University of Chicago Law School from 1992 to 2004 .",
-                       u"He served three terms representing the 13th District in the Illinois Senate from 1997 to 2004 , running unsuccessfully for the United States House of Representatives in 2000 ."]
+                       u"He served three terms representing the 13th District in the Illinois Senate from 1997 to 2004 , running unsuccessfully for the United States House of Representatives in 2000 .",
+                       "Procter &amp; Gamble, one of Warren Buffet's "
+                       "mainstays, has been on a roll: http://t.co/AyWYR4vAMD $PG",
+                       "Procter &amp; Gamble innovation focusing on personal "
+                       "care and home products via http://t.co/62Dw970FTJ",
+                       "$NUGT Reviews Updated Saturday, January 10, "
+                       "2015 05:11:22 AM $FSLR $ECIG $PG $DRYS http://t.co/tfgDyq6nek"]
 
 transport = TSocket.TSocket(server, port)
 transport = TTransport.TBufferedTransport(transport)

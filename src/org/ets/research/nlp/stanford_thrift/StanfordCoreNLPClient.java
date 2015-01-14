@@ -68,7 +68,7 @@ public class StanfordCoreNLPClient {
                 }
 
                 // partial tagged text
-                List<TaggedToken> tokens = client.tag_partially_tagged_tokenized_sentence(sentence, "_");
+                List<TaggedToken> tokens = client.tag_partially_tagged_sentence(sentence, "_");
 
                 for (TaggedToken tok : tokens)
                 {

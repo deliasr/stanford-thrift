@@ -20,26 +20,22 @@
 
 package org.ets.research.nlp.stanford_thrift.general;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import CoreNLP.ParseTree;
 import CoreNLP.TaggedToken;
-import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetBeginAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetEndAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.ling.Sentence;
-import edu.stanford.nlp.ling.TaggedWord;
-import edu.stanford.nlp.ling.TaggedWordFactory;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.ParserAnnotatorUtils;
 import edu.stanford.nlp.trees.EnglishGrammaticalStructureFactory;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CoreNLPThriftUtil
 {
@@ -179,15 +175,25 @@ public class CoreNLPThriftUtil
 		return improved;
 	}
 
-	public static List<TaggedWord> getListOfTaggedWordsFromTaggedSentence(String taggedSentence, String divider)
+	public static List<TaggedWord> getListOfTaggedWordsFromTaggedTokens(
+			String[] taggedTokens, String divider)
 	{
-		String[] taggedTokens = taggedSentence.split(" ");
 		TaggedWordFactory tf = new TaggedWordFactory(divider.charAt(0));
 		List<TaggedWord> taggedWordList = new ArrayList<TaggedWord>();
 		for (String taggedToken : taggedTokens)
 		{
 			taggedWordList.add((TaggedWord)tf.newLabelFromString(taggedToken));
 		}
+		return taggedWordList;
+	}
+
+	public static List<TaggedWord> getListOfTaggedWordsFromTaggedSentence(String taggedSentence, String divider)
+	{
+		String[] taggedTokens = taggedSentence.split(" ");
+
+		List<TaggedWord> taggedWordList =
+				getListOfTaggedWordsFromTaggedTokens(taggedTokens, divider);
+
 		return taggedWordList;
 	}
 
