@@ -116,7 +116,6 @@
             <artifactId>stanford-corenlp</artifactId>
             <version>3.4.1</version>
             <scope>compile</scope>
-            <classifier>models</classifier>
         </dependency>
         <dependency>
             <groupId>edu.stanford.nlp</groupId>
