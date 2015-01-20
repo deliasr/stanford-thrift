@@ -16,6 +16,15 @@
 
     <build>
         <sourceDirectory>${basedir}/src</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>lib</directory>
+                <includes>
+                    <include>gate-EN-twitter.model</include>
+                </includes>
+                <targetPath>edu/stanford/nlp/models/pos-tagger</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
