@@ -3,11 +3,12 @@
 *.iml
 
 .env
+.gradle
 
 *.jar
-genpy
-src/CoreNLP
 
-target
+thrift/
+src/CoreNLP
+build
 
 

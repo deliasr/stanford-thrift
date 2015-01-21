@@ -1,0 +1,73 @@
+/* usage: gradle distZip */
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'application'
+
+group = 'com.knowsis.stanfordthrift'
+version = '1.0-knowsis'
+
+description = """stanford-corenlp-wrapper"""
+
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+
+repositories {
+    //maven { url "http://repo.maven.apache.org/maven2" }
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'log4j', name: 'log4j', version:'1.2.17'
+    compile group: 'org.apache.thrift', name: 'libthrift', version:'0.9.2'
+    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.7'
+    compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version:'3.4.1'
+    compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version:'3.4.1', classifier:'models'
+    testCompile group: 'junit', name: 'junit', version:'3.8.1'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'lib'
+        }
+    }
+}
+
+clean {
+    delete "src/CoreNLP"
+    delete "thift/py"
+    delete "build"
+}
+
+task dirs << {
+    new File('thrift/py').mkdirs()
+    new File('src/CoreNLP').mkdirs()
+}
+
+task genThriftPython (type: Exec, dependsOn: 'dirs') {
+    commandLine 'thrift', '-v', '--gen', 'py:utf8strings,slots,new_style', '-out', 'thrift/py', 'corenlp.thrift'
+}
+
+task genThriftJava (type: Exec) {
+    commandLine 'thrift', '-v', '--gen', 'java', '-out', 'src', 'corenlp.thrift'
+}
+
+compileJava {
+    dependsOn 'genThriftJava', 'genThriftPython'
+}
+
+task uberJar(type: Jar, dependsOn: [':compileJava', ':processResources']) {
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from configurations.runtime.asFileTree.files.collect { zipTree(it) }
+
+    manifest {
+        attributes 'Main-Class': 'org.ets.research.nlp.stanford_thrift.StanfordCoreNLPServer'
+    }
+}
+
+defaultTasks 'clean', 'uberJar'
