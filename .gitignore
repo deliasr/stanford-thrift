@@ -5,8 +5,6 @@
 .env
 .gradle
 
-*.jar
-
 thrift/
 src/CoreNLP
 build
