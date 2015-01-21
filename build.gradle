@@ -39,17 +39,16 @@ sourceSets {
 
 clean {
     delete "src/CoreNLP"
-    delete "thift/py"
     delete "build"
 }
 
 task dirs << {
-    new File('thrift/py').mkdirs()
+    new File('build/thrift/py').mkdirs()
     new File('src/CoreNLP').mkdirs()
 }
 
 task genThriftPython (type: Exec, dependsOn: 'dirs') {
-    commandLine 'thrift', '-v', '--gen', 'py:utf8strings,slots,new_style', '-out', 'thrift/py', 'corenlp.thrift'
+    commandLine 'thrift', '-v', '--gen', 'py:utf8strings,slots,new_style', '-out', 'build/thrift/py', 'corenlp.thrift'
 }
 
 task genThriftJava (type: Exec) {
