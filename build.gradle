@@ -82,6 +82,8 @@ task uberJar(type: Jar, dependsOn: [':compileJava', ':processResources']) {
 task publishPython(dependsOn: 'genThriftPython') << {
     copy {
         from 'setup.py'
+        from 'MANIFEST.in'
+        from 'version'
         into 'build/thrift/py'
     }
     exec {
