@@ -14,6 +14,11 @@ repositories {
     mavenCentral()
 }
 
+def thrift = [
+    config: 'corenlp.thrift',
+    pythonOut: 'build/thrift/py/knowsis'
+]
+
 def getVersionName = { ->
     def stdout = new ByteArrayOutputStream()
     exec {
@@ -53,16 +58,16 @@ clean {
 }
 
 task dirs << {
-    new File('build/thrift/py').mkdirs()
+    new File(thrift.pythonOut).mkdirs()
     new File('src/CoreNLP').mkdirs()
 }
 
 task genThriftPython (type: Exec, dependsOn: 'dirs') {
-    commandLine 'thrift', '-v', '--gen', 'py:utf8strings,slots,new_style', '-out', 'build/thrift/py', 'corenlp.thrift'
+    commandLine 'thrift', '-v', '--gen', 'py:utf8strings,slots,new_style', '-out', thrift.pythonOut, thrift.config
 }
 
 task genThriftJava (type: Exec) {
-    commandLine 'thrift', '-v', '--gen', 'java', '-out', 'src', 'corenlp.thrift'
+    commandLine 'thrift', '-v', '--gen', 'java', '-out', 'src', thrift.config
 }
 
 compileJava {

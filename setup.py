@@ -11,7 +11,7 @@ setup(
     # package_dir={'': 'build/thrift/py'},
     # packages=find_packages('build/thrift/py/corenlp'),
     packages=[
-        'corenlp'
+        'knowsis.corenlp'
     ],
     include_package_data=True,
     description='Thrift client for Stanford CoreNLP service',
