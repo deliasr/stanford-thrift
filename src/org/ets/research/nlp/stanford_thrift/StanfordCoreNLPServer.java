@@ -19,16 +19,17 @@ package org.ets.research.nlp.stanford_thrift;
 */
 
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-
+import CoreNLP.StanfordCoreNLP;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadPoolServer;
 import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TServerTransport;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 // Generated code
-import CoreNLP.*;
 
 public class StanfordCoreNLPServer 
 {
@@ -97,6 +98,7 @@ public class StanfordCoreNLPServer
         }
 
         org.apache.log4j.BasicConfigurator.configure();
+        Logger.getRootLogger().setLevel(Level.DEBUG);
         
         try 
         {
