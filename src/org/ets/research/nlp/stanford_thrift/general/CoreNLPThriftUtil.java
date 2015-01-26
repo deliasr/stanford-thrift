@@ -187,6 +187,18 @@ public class CoreNLPThriftUtil
 		return taggedWordList;
 	}
 
+	public static List<TaggedWord> getListOfTaggedWordsFromTaggedTokens(
+			List<TaggedToken> taggedTokens)
+	{
+		List<TaggedWord> taggedWordList = new ArrayList<TaggedWord>();
+		for (TaggedToken tok : taggedTokens)
+		{
+			TaggedWord t = new TaggedWord(tok.getToken(), tok.getTag());
+			taggedWordList.add(t);
+		}
+		return taggedWordList;
+	}
+
 	public static List<TaggedWord> getListOfTaggedWordsFromTaggedSentence(String taggedSentence, String divider)
 	{
 		String[] taggedTokens = taggedSentence.split(" ");

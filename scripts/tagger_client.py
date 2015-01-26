@@ -40,9 +40,14 @@ p_tagged_sentences = [u"What a nice|JJ day|RB in London today",
 
 p_tagged_tokenized_sentences = [[u"NUGT|NNP", u"Reviews", u"Updated",
                                 u"Saturday",
-                            u"January", u"10", u",", u"2015", u"05:11:22",
-                            u"AM", u"FSLR|NNP", u"ECIG|NNP", u"PG|NNP",
-                            u"DRYS|NNP", u"http://t.co/tfgDyq6nek"]]
+                                u"January", u"10", u",", u"2015", u"05:11:22",
+                                u"AM", u"FSLR|NNP", u"ECIG|NNP", u"PG|NNP",
+                                u"DRYS|NNP", u"http://t.co/tfgDyq6nek|URL"],
+                                [u'#EY|HT', u'comments', u'on', u'impacts',
+                                 u'from', u'#oil|HT', u'#price|HT',
+                                 u'collapse', u'http://t.co/OIuDw1KA2O|URL',
+                                 u'via', u'@OGFJ|USR', u'_', u'#EY|HT',
+                                 u"'s", u'Deborah|NNP', u'Byers', u'comments']]
 
 transport = TSocket.TSocket(server, port)
 transport = TTransport.TBufferedTransport(transport)
@@ -52,7 +57,6 @@ client = StanfordCoreNLP.Client(protocol)
 transport.open()
 
 try:
-    '''
     result = client.tag_text(arbitrary_text)
     for r in result:
         print r
@@ -65,17 +69,27 @@ try:
         result = client.tag_tokenized_sentence(sentence.split(" "))
         print result
         print
-    '''
+
     for sentence in p_tagged_sentences:
         print sentence
         result = client.tag_partially_tagged_sentence(sentence, u"|")
         print result
 
     # remember to update the tagger model
+    # make sure the delimiter char doesn't appear in the tokens
     for sentence in p_tagged_tokenized_sentences:
-        print sentence
+        print 'Sent: ', sentence
         result = client.tag_partially_tagged_tokenized_sentence(sentence, u"|")
         print result
+
+    print 'tag_partially_tagged_tokens result'
+
+    t1 = TaggedToken(token = 'Review', tag = 'NNP')
+    t2 = TaggedToken(token = 'street', tag = None)
+    tokens = [t1, t2]
+    result = client.tag_partially_tagged_tokens(tokens)
+
+    print result
 
 except Exception as e:
     print e

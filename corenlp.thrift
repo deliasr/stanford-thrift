@@ -48,6 +48,8 @@ service StanfordCoreNLP
     list<TaggedToken> tag_tokenized_sentence(1:list<string> tokenizedSentence),
     list<TaggedToken> tag_partially_tagged_tokenized_sentence(1:list<string>
     ptaggedtokenizedSentence, 2:string divider),
+    list<TaggedToken> tag_partially_tagged_tokens(list<TaggedToken>
+        ptaggedTokens),
     list<TaggedToken> tag_partially_tagged_sentence(1:string ptaggedSentence, 2:string divider),
     // end of pos tagging methods
     string untokenize_sentence(1:list<string> sentenceTokens),

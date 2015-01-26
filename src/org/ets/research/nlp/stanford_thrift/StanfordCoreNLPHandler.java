@@ -227,6 +227,14 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
     }
 
     @Override
+    public List<TaggedToken> tag_partially_tagged_tokens
+            (List<TaggedToken> ptaggedTokens) throws
+            TException {
+        return tagger.tag_partially_tagged_tokens
+                (ptaggedTokens);
+    }
+
+    @Override
     public List<TaggedToken> tag_partially_tagged_sentence(String ptaggedSentence, String divider) throws TException {
         return tagger.tag_partially_tagged_sentence
                 (ptaggedSentence, divider);

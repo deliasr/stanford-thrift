@@ -82,6 +82,17 @@ public class StanfordTaggerThrift
         return tagSingleSentencePTags(pTaggedSentence);
     }
 
+    public List<TaggedToken> tag_partially_tagged_tokens
+            (List<TaggedToken> tokens)
+    {
+
+        List<TaggedWord> pTaggedSentence = CoreNLPThriftUtil
+                .getListOfTaggedWordsFromTaggedTokens
+                        (tokens);
+
+        return tagSingleSentencePTags(pTaggedSentence);
+    }
+
     public List<TaggedToken> tag_partially_tagged_sentence
             (String tokenizedPTaggedSentence, String divider)
     {
