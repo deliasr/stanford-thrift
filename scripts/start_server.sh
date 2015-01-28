@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINJAR=$(dirname $0:A)/../build/libs/stanford-corenlp-wrapper-1.0-knowsis.jar
+MAINJAR=$(dirname $0:A)/../build/libs/stanford-corenlp-wrapper-1.0.4-knowsis.jar
 
 if [ $# -eq 3 ]; then
  PORT=$1

@@ -46,15 +46,17 @@ transport.open()
 
 
 try:
+    '''
     result = client.get_entities_from_text(text)
     print result
     print
     result = client.get_entities_from_trees(trees)
     print result
-#    print
-#    for sentence in tokenized_sentences:
-#        result = client.get_entities_from_tokens(sentence)
-#        print result
+    '''
+    print
+    for sentence in tokenized_sentences:
+        result = client.get_entities_from_tokens_noparse(sentence)
+        print result
 
 except Exception as e:
     print e
