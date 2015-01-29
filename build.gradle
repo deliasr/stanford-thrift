@@ -1,36 +1,19 @@
+/*
+DEPENDENCIES
+ */
+
+plugins {
+    id "nebula.os-package" version "2.0.3"
+}
+
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'application'
 
-group = 'com.knowsis.stanfordthrift'
-
-description = """stanford-corenlp-wrapper"""
-
-sourceCompatibility = 1.5
-targetCompatibility = 1.5
-
 repositories {
-    //maven { url "http://repo.maven.apache.org/maven2" }
     mavenCentral()
+    jcenter()
 }
-
-def thrift = [
-    config: 'corenlp.thrift',
-    pythonOut: 'build/thrift/py/knowsis'
-]
-
-def getVersionName = { ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'describe', '--tags'
-        standardOutput = stdout
-    }
-    def version = new File('version')
-    version.write(stdout.toString().trim())
-    return stdout.toString().trim()
-}
-
-version = getVersionName()
 
 dependencies {
     compile group: 'log4j', name: 'log4j', version:'1.2.17'
@@ -42,16 +25,60 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version:'3.8.1'
 }
 
+/*
+HELPERS
+ */
+
+def gitVersion = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe', '--tags'
+        standardOutput = stdout
+    }
+    def version = new File('version')
+    version.write(stdout.toString().trim())
+    return stdout.toString().trim()
+}
+
+def gitChangelog = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'tag', '-n5'
+        standardOutput = stdout
+    }
+    def version = new File('build/debian/changelog')
+    version.write(stdout.toString().trim())
+    return stdout.toString().trim()
+}
+
+/*
+CONFIGURATION
+ */
+
+group = 'com.knowsis.stanfordthrift'
+
+description = """stanford-corenlp-wrapper"""
+
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+
+def thrift = [
+    config: 'corenlp.thrift',
+    pythonOut: 'build/thrift/py/knowsis'
+]
+
+version = gitVersion()
+
 sourceSets {
     main {
-        java {
-            srcDir 'src'
-        }
-        resources {
-            srcDir 'lib'
-        }
+        java { srcDir 'src' }
+        resources { srcDir 'lib' }
     }
 }
+
+/*
+TASKS
+ */
 
 clean {
     delete 'src/CoreNLP'
@@ -85,7 +112,7 @@ task uberJar(type: Jar, dependsOn: [':compileJava', ':processResources']) {
     }
 }
 
-task publishPython(dependsOn: 'genThriftPython') << {
+task packagePython(dependsOn: 'genThriftPython') << {
     copy {
         from 'setup.py'
         from 'MANIFEST.in'
@@ -99,4 +126,21 @@ task publishPython(dependsOn: 'genThriftPython') << {
     }
 }
 
-defaultTasks 'clean', 'uberJar', 'publishPython'
+task packageDeb(type: Deb, dependsOn: 'uberJar') {
+    summary 'knowsis stanford corenlp wrapper with apache thrift'
+    packageGroup 'misc'
+
+    packager 'dev@knowsis.com'
+    url 'www.knowsis.com'
+
+    user 'knowsis'
+
+    into '/home/knowsis/corenlp'
+
+    from('build/libs') {
+        into 'lib'
+        user 'knowsis'
+    }
+}
+
+defaultTasks 'clean', 'publishPython', 'publishDeb'
