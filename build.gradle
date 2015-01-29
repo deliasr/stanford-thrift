@@ -143,4 +143,4 @@ task packageDeb(type: Deb, dependsOn: 'uberJar') {
     }
 }
 
-defaultTasks 'clean', 'publishPython', 'publishDeb'
+defaultTasks 'clean', 'packagePython', 'packageDeb'
