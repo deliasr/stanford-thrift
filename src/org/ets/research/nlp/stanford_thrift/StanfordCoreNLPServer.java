@@ -19,97 +19,32 @@ package org.ets.research.nlp.stanford_thrift;
 */
 
 
-import CoreNLP.StanfordCoreNLP;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.thrift.server.TServer;
-import org.apache.thrift.server.TThreadPoolServer;
-import org.apache.thrift.transport.TServerSocket;
-import org.apache.thrift.transport.TServerTransport;
-
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // Generated code
 
-public class StanfordCoreNLPServer 
+public class StanfordCoreNLPServer
 {
-    public static class ServerThread implements Runnable 
-    {
-        private Integer port;
-        private final int THREAD_POOL_SIZE = 10;
-
-        @SuppressWarnings("rawtypes")
-		public ServerThread(StanfordCoreNLP.Processor processor, Integer portNum) 
-        {
-            port = portNum;
-        }
-
-        public void run() 
-        {
-            try 
-            {
-                // Initialize the transport socket
-                TServerTransport serverTransport = new TServerSocket(port);
-                TThreadPoolServer.Args args = new TThreadPoolServer.Args(serverTransport);
-                args.maxWorkerThreads(THREAD_POOL_SIZE);
-                args.processor(processor);
-                args.executorService(new ScheduledThreadPoolExecutor(THREAD_POOL_SIZE));
-                TServer server = new TThreadPoolServer(args);
-                
-            	// From https://github.com/m1ch1/mapkeeper/blob/eb798bb94090c7366abc6b13142bf91e4ed5993b/stubjava/StubServer.java#L93
-                /*TNonblockingServerTransport trans = new TNonblockingServerSocket(port);
-                TThreadedSelectorServer.Args args = new TThreadedSelectorServer.Args(trans);
-                args.transportFactory(new TFramedTransport.Factory());
-                args.protocolFactory(new TBinaryProtocol.Factory());
-                args.processor(processor);
-                args.selectorThreads(4);
-                args.workerThreads(32);
-                TServer server = new TThreadedSelectorServer(args);*/
-
-                System.out.println("The CoreNLP server is running...");
-                server.serve();
-            } 
-            catch (Exception e) 
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    public static StanfordCoreNLPHandler handler;
-    @SuppressWarnings("rawtypes")
-	public static StanfordCoreNLP.Processor processor;
+    final static Logger logger = LoggerFactory.getLogger(StanfordCoreNLPServer.class);
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	public static void main(String[] args) 
-    {
-        Integer portNum = 0;
-        String configFile = "";
-
-        if (args.length != 2) 
+	public static void main(String[] args) throws InterruptedException {
+        if (args.length != 2)
         {
             System.err.println("Usage: StanfordCoreNLPServer <port> <config file>");
             System.exit(2);
-        }
-        else 
-        {
-            portNum = Integer.parseInt(args[0]);
-            configFile = args[1];
+            return;
         }
 
-        org.apache.log4j.BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.DEBUG);
-        
-        try 
-        {
-            handler = new StanfordCoreNLPHandler(configFile);
-            processor = new StanfordCoreNLP.Processor(handler);
-            Runnable r = new ServerThread(processor, portNum);
+        Integer portNum = Integer.parseInt(args[0]);
+        String configFile = args[1];
+
+        try {
+            Runnable r = new StanfordCoreNLPThread(configFile, portNum);
             new Thread(r).start();
-        } 
-        catch (Exception x) 
-        {
-            x.printStackTrace();
+        } catch (Exception ex) {
+            logger.error("general error", ex);
         }
     }
 }
