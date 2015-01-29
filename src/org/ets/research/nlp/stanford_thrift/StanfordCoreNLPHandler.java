@@ -159,6 +159,12 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
         return ner.getNamedEntitiesFromTrees(parseTrees);
     }
 
+    public List<NamedEntity> get_entities_from_tokens_noparse(List<String>
+                                                                    tokens) throws TApplicationException
+    {
+        return ner.getNamedEntitiesFromTokens(tokens);
+    }
+
     public List<NamedEntity> get_entities_from_trees(List<String> trees)
     {
         return ner.getNamedEntitiesFromTrees(trees);

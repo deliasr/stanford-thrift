@@ -20,20 +20,18 @@
 
 package org.ets.research.nlp.stanford_thrift.ner;
 
-import CoreNLP.*;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
-
-import org.ets.research.nlp.stanford_thrift.general.CoreNLPThriftUtil;
-
+import CoreNLP.NamedEntity;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.NERCombinerAnnotator;
 import edu.stanford.nlp.util.CoreMap;
+import org.ets.research.nlp.stanford_thrift.general.CoreNLPThriftUtil;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
 
 
 public class StanfordNERThrift 
@@ -64,6 +62,15 @@ public class StanfordNERThrift
 	public List<NamedEntity> getNamedEntitiesFromTrees(List<String> parseTrees)
 	{	
 		Annotation annotation = CoreNLPThriftUtil.getAnnotationFromParseTrees(parseTrees);
+		ner.annotate(annotation);
+		List<CoreMap> sentenceMap = annotation.get(CoreAnnotations.SentencesAnnotation.class);
+		return toNamedEntityObjects(sentenceMap);
+	}
+
+	public List<NamedEntity> getNamedEntitiesFromTokens(List<String> tokens)
+	{
+		Annotation annotation = CoreNLPThriftUtil.getAnnotationFromTokens
+				(tokens, null);
 		ner.annotate(annotation);
 		List<CoreMap> sentenceMap = annotation.get(CoreAnnotations.SentencesAnnotation.class);
 		return toNamedEntityObjects(sentenceMap);
