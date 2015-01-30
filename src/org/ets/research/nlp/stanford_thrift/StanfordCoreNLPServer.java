@@ -19,6 +19,11 @@ package org.ets.research.nlp.stanford_thrift;
 */
 
 
+import CoreNLP.StanfordCoreNLP;
+import org.apache.thrift.server.TServer;
+import org.apache.thrift.server.TSimpleServer;
+import org.apache.thrift.transport.TServerSocket;
+import org.apache.thrift.transport.TServerTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +35,7 @@ public class StanfordCoreNLPServer
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void main(String[] args) throws InterruptedException {
+
         if (args.length != 2)
         {
             System.err.println("Usage: StanfordCoreNLPServer <port> <config file>");
@@ -37,14 +43,29 @@ public class StanfordCoreNLPServer
             return;
         }
 
-        Integer portNum = Integer.parseInt(args[0]);
+        final Integer portNum = Integer.parseInt(args[0]);
         String configFile = args[1];
 
         try {
-            Runnable r = new StanfordCoreNLPThread(configFile, portNum);
-            new Thread(r).start();
+            final StanfordCoreNLP.Processor processor = new StanfordCoreNLP.Processor(new StanfordCoreNLPHandler(configFile));
+            Runnable server = new Runnable() {
+                public void run() {
+                    try {
+                        TServerTransport serverTransport = new TServerSocket(portNum);
+                        TServer server = new TSimpleServer(new TServer.Args(serverTransport).processor(processor));
+
+                        logger.info("The CoreNLP server is running...");
+                        server.serve();
+                    } catch (Exception ex) {
+                        logger.error("general error", ex);
+                    }
+                }
+            };
+            new Thread(server).start();
         } catch (Exception ex) {
             logger.error("general error", ex);
         }
+
+        logger.info("The CoreNLP server is shutting down...");
     }
 }
