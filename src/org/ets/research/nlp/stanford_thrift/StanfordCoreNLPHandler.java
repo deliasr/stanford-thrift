@@ -159,15 +159,18 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
         return ner.getNamedEntitiesFromTrees(parseTrees);
     }
 
-    public List<NamedEntity> get_entities_from_tokens_noparse(List<String>
-                                                                    tokens) throws TApplicationException
+    public List<NamedEntity> get_entities_from_pos_tokens(
+            List<TaggedToken> tokens) throws TApplicationException
     {
-        this.logger.info(String.format("getting entities for: %s", StringUtils.join(tokens)));
-        return ner.getNamedEntitiesFromTokens(tokens);
+        this.logger.info("getting entities for pos tagged tokens...");
+        return ner.getNamedEntitiesFromPosTokens(tokens);
     }
 
     public List<NamedEntity> get_entities_from_trees(List<String> trees)
     {
+        this.logger.info(String.format("getting entities for: %s",
+                StringUtils.join(trees)));
+
         return ner.getNamedEntitiesFromTrees(trees);
     }
     /* End Stanford NER methods */
@@ -225,20 +228,17 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
         return tagger.tag_tokenized_sentence(tokenizedSentence);
     }
 
-    @Override
     public List<TaggedToken> tag_partially_tagged_tokenized_sentence(
             List<String> ptaggedtokenizedSentence, String divider) throws TException {
         this.logger.info(String.format("tagging partially tagged: %s", StringUtils.join(ptaggedtokenizedSentence)));
         return tagger.tag_partially_tagged_tokenized_sentence(ptaggedtokenizedSentence, divider);
     }
 
-    @Override
     public List<TaggedToken> tag_partially_tagged_tokens(List<TaggedToken> ptaggedTokens) throws TException {
         this.logger.info(String.format("tagging partially tagged: %s", StringUtils.join(ptaggedTokens)));
         return tagger.tag_partially_tagged_tokens(ptaggedTokens);
     }
 
-    @Override
     public List<TaggedToken> tag_partially_tagged_sentence(
             String ptaggedSentence, String divider) throws TException {
         this.logger.info(String.format("tagging partially tagged: %s", ptaggedSentence));

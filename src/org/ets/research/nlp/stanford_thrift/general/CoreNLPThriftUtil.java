@@ -76,6 +76,8 @@ public class CoreNLPThriftUtil
 		allSentences.set(CoreAnnotations.SentencesAnnotation.class,
 				adjustCharacterOffsets(sentences, true));
 
+        System.out.println("All sentences as annotation:" + allSentences);
+        
 		return allSentences;
 	}
 
@@ -83,13 +85,22 @@ public class CoreNLPThriftUtil
 	// Call this again for each additional sentence worth of tokens,
 	// passing in that Annotation that was just returned from that first call.
 	// Otherwise pass in null as the second argument.
-	public static Annotation getAnnotationFromTokens(List<String> tokens, Annotation existingAnnotation)
+	public static Annotation getAnnotationFromPosTokens(List<TaggedToken> 
+                                                                tokensPos)
 	{
 		List<CoreMap> sentences = new ArrayList<CoreMap>();
 		Annotation allSentences;
 
-		String[] tokensArr = new String[tokens.size()];
+        List<String> tokens = new ArrayList<String>();
+        
+        for (TaggedToken tok : tokensPos) {
+            tokens.add(tok.getToken());
+        }
+            
+        String[] tokensArr = new String[tokens.size()];
 		tokens.toArray(tokensArr);
+        
+        
 		List<CoreLabel> sentenceTokens = Sentence.toCoreLabelList(tokensArr);
 		String originalText = Sentence.listToString(tokens);
 
@@ -101,21 +112,22 @@ public class CoreNLPThriftUtil
 		sentence.set(CoreAnnotations.TokenBeginAnnotation.class, 0);
 		sentence.set(CoreAnnotations.TokenEndAnnotation.class, sentenceTokens.size());
 
+        List<CoreLabel> tokensAnn = (List)sentence.get(CoreAnnotations
+                .TokensAnnotation.class);
+
+        for(int i = 0; i < tokensAnn.size(); i++) {
+            (tokensAnn.get(i)).set(
+                    CoreAnnotations.PartOfSpeechAnnotation.class, 
+                    tokensPos.get(i).getTag());
+        }
+        
 		sentences.add(sentence);
 
-		if (existingAnnotation != null)
-		{
-			sentences.addAll(existingAnnotation.get(CoreAnnotations.SentencesAnnotation.class));
-			allSentences = existingAnnotation.copy();
-			allSentences.set(CoreAnnotations.SentencesAnnotation.class,
-					adjustCharacterOffsets(sentences, true));
-		}
-		else
-		{
-			allSentences = new Annotation(Sentence.listToString(tokens));
-			allSentences.set(CoreAnnotations.SentencesAnnotation.class,
-					adjustCharacterOffsets(sentences, true));
-		}
+		allSentences = new Annotation(Sentence.listToString(tokens));
+		allSentences.set(CoreAnnotations.SentencesAnnotation.class,
+                adjustCharacterOffsets(sentences, true));
+		
+        //System.out.println("All sentences as annotation:" + allSentences);
 
 		return allSentences;
 	}
