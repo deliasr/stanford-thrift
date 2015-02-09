@@ -21,6 +21,7 @@
 package org.ets.research.nlp.stanford_thrift.ner;
 
 import CoreNLP.NamedEntity;
+import CoreNLP.TaggedToken;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -50,7 +51,8 @@ public class StanfordNERThrift
 		{
 			String[] models = new String[nerModels.size()];
 			nerModels.toArray(models);
-			ner = new NERCombinerAnnotator(false, models);
+			ner = new NERCombinerAnnotator(true, models);
+            
 		}
 		catch (Exception e)
 		{
@@ -67,12 +69,30 @@ public class StanfordNERThrift
 		return toNamedEntityObjects(sentenceMap);
 	}
 
-	public List<NamedEntity> getNamedEntitiesFromTokens(List<String> tokens)
+	public List<NamedEntity> getNamedEntitiesFromPosTokens(List<TaggedToken> 
+                                                                   tokens)
 	{
-		Annotation annotation = CoreNLPThriftUtil.getAnnotationFromTokens
-				(tokens, null);
+		Annotation annotation = CoreNLPThriftUtil.getAnnotationFromPosTokens
+                (tokens);
 		ner.annotate(annotation);
 		List<CoreMap> sentenceMap = annotation.get(CoreAnnotations.SentencesAnnotation.class);
+
+        /*
+        for(CoreMap sentence: sentenceMap) {
+            // traversing the words in the current sentence
+            // a CoreLabel is a CoreMap with additional token-specific methods
+            for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
+                // this is the text of the token
+                String word = token.get(TextAnnotation.class);
+                // this is the POS tag of the token
+                String pos = token.get(PartOfSpeechAnnotation.class);
+                // this is the NER label of the token
+                String ne = token.get(NamedEntityTagAnnotation.class);
+                
+                System.out.println(word + " " + pos + " " + ne);
+            }
+        }
+        */
 		return toNamedEntityObjects(sentenceMap);
 	}
 	
@@ -82,6 +102,29 @@ public class StanfordNERThrift
 		ner.annotate(withNE);
 		return withNE;
 	}
+    
+    private void addEntities(Stack<CoreLabel> namedEntityStack, 
+                            List<NamedEntity> entities, 
+                            int sentenceNum) {
+        String tag = "";
+        String entity = "";
+        int startIndex = namedEntityStack.peek().beginPosition();
+        int endIndex = namedEntityStack.peek().endPosition();
+        while (!namedEntityStack.empty())
+        {
+            CoreLabel popped = namedEntityStack.pop();
+            tag = popped.ner();
+            entity = popped.word() + " " + entity;
+            if (popped.beginPosition() < startIndex)
+            {
+                startIndex = popped.beginPosition();
+            }
+        }
+        if (!tag.equals("O"))
+        {
+            entities.add(new NamedEntity(entity.trim(), tag, startIndex, endIndex, sentenceNum));
+        }        
+    }
 	
 	private List<NamedEntity> toNamedEntityObjects(List<CoreMap> results)
 	{
@@ -101,30 +144,15 @@ public class StanfordNERThrift
 				}
 				else
 				{
-					String tag = "";
-					String entity = "";
-					int startIndex = namedEntityStack.peek().beginPosition();
-					int endIndex = namedEntityStack.peek().endPosition();
-					while (!namedEntityStack.empty())
-					{
-						CoreLabel popped = namedEntityStack.pop();
-						tag = popped.ner();
-						entity = popped.word() + " " + entity;
-						if (popped.beginPosition() < startIndex)
-						{
-							startIndex = popped.beginPosition();
-						}
-					}
-					if (!tag.equals("O"))
-					{
-						entities.add(new NamedEntity(entity.trim(), tag, startIndex, endIndex, sentenceNum));
-					}
+					addEntities(namedEntityStack, entities, sentenceNum);
 					namedEntityStack.push(wi);
 				}
 			}
 			sentenceNum++;
 		}
-	
+        
+        // add remainder elems on the stack if any
+        addEntities(namedEntityStack, entities, sentenceNum);
 		return entities;
 	}
 }

@@ -24,6 +24,7 @@ import CoreNLP.StanfordCoreNLP;
 import CoreNLP.TaggedToken;
 import edu.stanford.nlp.ling.TaggedWord;
 import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.util.StringUtils;
 import org.apache.thrift.TApplicationException;
 import org.apache.thrift.TException;
 import org.ets.research.nlp.stanford_thrift.coref.StanfordCorefThrift;
@@ -35,6 +36,8 @@ import org.ets.research.nlp.stanford_thrift.parser.StanfordSRParserThrift;
 import org.ets.research.nlp.stanford_thrift.tagger.StanfordTaggerThrift;
 import org.ets.research.nlp.stanford_thrift.tokenizer.StanfordTokenizerThrift;
 import org.ets.research.nlp.stanford_thrift.tregex.StanfordTregexThrift;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +46,8 @@ import java.util.List;
 
 public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
 {
+    final Logger logger = LoggerFactory.getLogger(StanfordCoreNLPHandler.class);
+
     private StanfordParserThrift parser;
     private StanfordNERThrift ner;
     private StanfordCorefThrift coref;
@@ -51,55 +56,48 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
     private StanfordTokenizerThrift tokenizer;
     private StanfordSRParserThrift srparser;
 
-
     public StanfordCoreNLPHandler(String configFilePath) throws Exception
     {
-        try
+        this.logger.info("Reading in configuration from " + configFilePath + "...");
+        CoreNLPThriftConfig config = new CoreNLPThriftConfig(configFilePath);
+
+        String parserModelPath = config.getParserModel();
+        if (parserModelPath != null)
         {
-            System.err.println("Reading in configuration from " + configFilePath + "...");
-            CoreNLPThriftConfig config = new CoreNLPThriftConfig(configFilePath);
-
-            String parserModelPath = config.getParserModel();
-            if (parserModelPath != null)
-            {
-                System.err.println("Initializing Parser...");
-                parser = new StanfordParserThrift(parserModelPath);
-            }
-
-            List<String> nerModels = config.getNERModels();
-            if (nerModels != null)
-            {
-                System.err.println("Initializing Named Entity Recognizer...");
-                ner = new StanfordNERThrift(nerModels);
-            }
-
-            System.err.println("Initializing Coreference Resolver...");
-            coref = new StanfordCorefThrift();
-
-            System.err.println("Initializing Tregex...");
-            tregex = new StanfordTregexThrift();
-
-            String taggerModelPath = config.getTaggerModel();
-            if (taggerModelPath != null)
-            {
-                System.err.println("Initializing Tagger...");
-                tagger = new StanfordTaggerThrift(taggerModelPath);
-            }
-
-            System.err.println("Initializing Tokenizer...");
-            tokenizer = new StanfordTokenizerThrift();
-
-            String srModelPath = config.getSRParserModel();
-            if (srModelPath != null)
-            {
-                System.err.println("Initializing shift-reduce org.ets.research.nlp.stanford_thrift.parser...");
-                srparser = new StanfordSRParserThrift(config.getSRParserModel());
-            }
+            this.logger.info("Initializing Parser...");
+            parser = new StanfordParserThrift(parserModelPath);
         }
-        catch (Exception e)
+
+        List<String> nerModels = config.getNERModels();
+        if (nerModels != null)
         {
-            throw e;
+            this.logger.info("Initializing Named Entity Recognizer...");
+            ner = new StanfordNERThrift(nerModels);
         }
+
+        this.logger.info("Initializing Coreference Resolver...");
+        coref = new StanfordCorefThrift();
+
+        this.logger.info("Initializing Tregex...");
+        tregex = new StanfordTregexThrift();
+
+        String taggerModelPath = config.getTaggerModel();
+        if (taggerModelPath != null)
+        {
+            this.logger.info("Initializing Tagger...");
+            tagger = new StanfordTaggerThrift(taggerModelPath);
+        }
+
+        this.logger.info("Initializing Tokenizer...");
+        tokenizer = new StanfordTokenizerThrift();
+
+        String srModelPath = config.getSRParserModel();
+        if (srModelPath != null)
+        {
+            this.logger.info("Initializing shift-reduce org.ets.research.nlp.stanford_thrift.parser...");
+            srparser = new StanfordSRParserThrift(config.getSRParserModel());
+        }
+        this.logger.info("Initializing finished...");
     }
 
     /* Begin Stanford Parser methods */
@@ -146,6 +144,7 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
     /* Begin Stanford NER methods */
     public List<NamedEntity> get_entities_from_text(String text) throws TApplicationException
     {
+        this.logger.info(String.format("getting entities for: %s", text));
         List<ParseTree> parseTreeObjects = parser.parse_text(text, null);
         List<String> parseTrees = CoreNLPThriftUtil.ParseTreeObjectsToString(parseTreeObjects);
         return ner.getNamedEntitiesFromTrees(parseTrees);
@@ -153,20 +152,25 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
 
     public List<NamedEntity> get_entities_from_tokens(List<String> tokens) throws TApplicationException
     {
+        this.logger.info(String.format("getting entities for: %s", StringUtils.join(tokens)));
         ParseTree parseTreeObject = parser.parse_tokens(tokens, null);
         List<String> parseTrees = new ArrayList<String>();
         parseTrees.add(parseTreeObject.tree);
         return ner.getNamedEntitiesFromTrees(parseTrees);
     }
 
-    public List<NamedEntity> get_entities_from_tokens_noparse(List<String>
-                                                                    tokens) throws TApplicationException
+    public List<NamedEntity> get_entities_from_pos_tokens(
+            List<TaggedToken> tokens) throws TApplicationException
     {
-        return ner.getNamedEntitiesFromTokens(tokens);
+        this.logger.info("getting entities for pos tagged tokens...");
+        return ner.getNamedEntitiesFromPosTokens(tokens);
     }
 
     public List<NamedEntity> get_entities_from_trees(List<String> trees)
     {
+        this.logger.info(String.format("getting entities for: %s",
+                StringUtils.join(trees)));
+
         return ner.getNamedEntitiesFromTrees(trees);
     }
     /* End Stanford NER methods */
@@ -224,26 +228,21 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
         return tagger.tag_tokenized_sentence(tokenizedSentence);
     }
 
-    @Override
-    public List<TaggedToken> tag_partially_tagged_tokenized_sentence
-            (List<String> ptaggedtokenizedSentence, String divider) throws
-            TException {
-        return tagger.tag_partially_tagged_tokenized_sentence
-                (ptaggedtokenizedSentence, divider);
+    public List<TaggedToken> tag_partially_tagged_tokenized_sentence(
+            List<String> ptaggedtokenizedSentence, String divider) throws TException {
+        this.logger.info(String.format("tagging partially tagged: %s", StringUtils.join(ptaggedtokenizedSentence)));
+        return tagger.tag_partially_tagged_tokenized_sentence(ptaggedtokenizedSentence, divider);
     }
 
-    @Override
-    public List<TaggedToken> tag_partially_tagged_tokens
-            (List<TaggedToken> ptaggedTokens) throws
-            TException {
-        return tagger.tag_partially_tagged_tokens
-                (ptaggedTokens);
+    public List<TaggedToken> tag_partially_tagged_tokens(List<TaggedToken> ptaggedTokens) throws TException {
+        this.logger.info(String.format("tagging partially tagged: %s", StringUtils.join(ptaggedTokens)));
+        return tagger.tag_partially_tagged_tokens(ptaggedTokens);
     }
 
-    @Override
-    public List<TaggedToken> tag_partially_tagged_sentence(String ptaggedSentence, String divider) throws TException {
-        return tagger.tag_partially_tagged_sentence
-                (ptaggedSentence, divider);
+    public List<TaggedToken> tag_partially_tagged_sentence(
+            String ptaggedSentence, String divider) throws TException {
+        this.logger.info(String.format("tagging partially tagged: %s", ptaggedSentence));
+        return tagger.tag_partially_tagged_sentence (ptaggedSentence, divider);
     }
 
     /* End Stanford Tagger methods */
@@ -257,6 +256,7 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
 
     public List<List<String>> tokenize_text(String arbitraryText)
     {
+        this.logger.info(String.format("tokenizing: %s", arbitraryText));
         return tokenizer.tokenizeText(arbitraryText);
     }
     /* End Stanford Tokenizer methods */

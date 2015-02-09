@@ -1,16 +1,13 @@
 package org.ets.research.nlp.stanford_thrift;
-// Generated code
-import CoreNLP.ParseTree;
+
+import CoreNLP.NamedEntity;
 import CoreNLP.StanfordCoreNLP;
 import CoreNLP.TaggedToken;
-import edu.stanford.nlp.ling.TaggedWord;
-import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
-import org.ets.research.nlp.stanford_thrift.general.CoreNLPThriftUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -18,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StanfordCoreNLPClient1 {
+public class StanfordCoreNLPClientNE {
 
     public static void main(String [] args) throws Exception {
 
@@ -64,47 +61,23 @@ public class StanfordCoreNLPClient1 {
             infile = new FileReader(inputFilename);
             BufferedReader in = new BufferedReader(infile);
             while (in.ready()) {
-                String sentence = in.readLine();
+                String sentenceStr = in.readLine();
 
-                // parse tree
-                List<ParseTree> trees = client.parse_text(sentence, null);
-                for (ParseTree tree : trees)
-                {
-                    System.out.println(tree.tree);
+                List<TaggedToken> tokens = new ArrayList<TaggedToken>();
+                
+                tokens.add(new TaggedToken("NNP", "Diane"));
+                tokens.add(new TaggedToken("NNP", "New"));
+                tokens.add(new TaggedToken("NNP", "Jersey"));
+
+                //tokens.add(new TaggedToken("VB", "talks"));
+
+                List<NamedEntity> entities = 
+                        client.get_entities_from_pos_tokens(tokens);
+                
+                for (NamedEntity e : entities) {
+                    System.out.println(e.getEntity() + e.getTag());
                 }
-
-                List<TaggedWord> pTaggedSentence = CoreNLPThriftUtil
-                        .getListOfTaggedWordsFromTaggedSentence
-                                (sentence, "_");
-
-                String taggerModel =
-                        "stanford-corenlp-3.5.0-models/" +
-                                "edu/stanford/nlp/models/pos-tagger/english" +
-                                "-left3words/english-left3words-distsim.tagger";
-
-                MaxentTagger tagger = new MaxentTagger(taggerModel);
-                List<TaggedWord> outputFromTagger = tagger.tagSentence(pTaggedSentence,
-                        true);
-                List<TaggedToken> taggedSentence = new ArrayList<TaggedToken>();
-                for (TaggedWord tw : outputFromTagger)
-                {
-                    TaggedToken token = new TaggedToken();
-                    token.tag = tw.tag();
-                    token.token = tw.word();
-                    taggedSentence.add(token);
-                    System.out.println(token);
-                }
-
-                /*
-                // partial tagged text
-                List<TaggedToken> tokens = client.tag_partially_tagged_tokenized_sentence(sentence, "_");
-
-                for (TaggedToken tok : tokens)
-                {
-                    System.out.println(tok.getToken() + " " + tok.getTag());
-                }
-
-                */
+                
             }
             in.close();
         }
@@ -112,4 +85,5 @@ public class StanfordCoreNLPClient1 {
             e.printStackTrace();
         }
     }
+    
 }

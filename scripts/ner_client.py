@@ -49,6 +49,7 @@ try:
     '''
     result = client.get_entities_from_text(text)
     print result
+
     print
     result = client.get_entities_from_trees(trees)
     print result
@@ -57,6 +58,12 @@ try:
     for sentence in tokenized_sentences:
         result = client.get_entities_from_tokens_noparse(sentence)
         print result
+
+    ne1 = NamedEntity(entity=u'Diane', tag=u'PERSON',
+                      startOffset=11, endOffset=17,
+                      sentence_number=0)
+
+    print ne1
 
 except Exception as e:
     print e
