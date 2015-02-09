@@ -48,20 +48,11 @@ public class StanfordCoreNLPServer
 
         try {
             final StanfordCoreNLP.Processor processor = new StanfordCoreNLP.Processor(new StanfordCoreNLPHandler(configFile));
-            Runnable server = new Runnable() {
-                public void run() {
-                    try {
-                        TServerTransport serverTransport = new TServerSocket(portNum);
-                        TServer server = new TSimpleServer(new TServer.Args(serverTransport).processor(processor));
+            TServerTransport serverTransport = new TServerSocket(portNum);
+            TServer server = new TSimpleServer(new TServer.Args(serverTransport).processor(processor));
 
-                        logger.info("The CoreNLP server is running...");
-                        server.serve();
-                    } catch (Exception ex) {
-                        logger.error("general error", ex);
-                    }
-                }
-            };
-            new Thread(server).start();
+            logger.info("The CoreNLP server is running...");
+            server.serve();
         } catch (Exception ex) {
             logger.error("general error", ex);
         }
