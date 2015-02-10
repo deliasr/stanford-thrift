@@ -162,7 +162,9 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
     public List<NamedEntity> get_entities_from_pos_tokens(
             List<TaggedToken> tokens) throws TApplicationException
     {
-        this.logger.info("getting entities for pos tagged tokens...");
+        this.logger.info("getting entities for pos tagged tokens: %s",
+                StringUtils.join(tokens));
+        
         return ner.getNamedEntitiesFromPosTokens(tokens);
     }
 
