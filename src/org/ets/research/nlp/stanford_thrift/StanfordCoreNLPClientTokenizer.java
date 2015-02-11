@@ -1,5 +1,5 @@
 package org.ets.research.nlp.stanford_thrift;
-// Generated code
+
 import CoreNLP.StanfordCoreNLP;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -10,9 +10,12 @@ import org.apache.thrift.transport.TTransport;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
-public class StanfordCoreNLPClientTagger {
-
+/**
+ * Created by delia on 11/02/15.
+ */
+public class StanfordCoreNLPClientTokenizer {
     public static void main(String [] args) throws Exception {
 
         String server = "";
@@ -56,49 +59,20 @@ public class StanfordCoreNLPClientTagger {
         try {
             infile = new FileReader(inputFilename);
             BufferedReader in = new BufferedReader(infile);
+            int i = 0;
             while (in.ready()) {
                 String sentence = in.readLine();
-                /*
-                // parse tree
-                List<ParseTree> trees = client.parse_text(sentence, null);
-                for (ParseTree tree : trees)
-                {
-                    System.out.println(tree.tree);
-                }
-
-                List<TaggedWord> pTaggedSentence = CoreNLPThriftUtil
-                        .getListOfTaggedWordsFromTaggedSentence
-                                (sentence, "_");
-
-                String taggerModel =
-                        "stanford-corenlp-3.4.1-models/" +
-                                "edu/stanford/nlp/models/pos-tagger/english" +
-                                "-left3words/english-left3words-distsim.tagger";
-
-                MaxentTagger tagger = new MaxentTagger(taggerModel);
-                List<TaggedWord> outputFromTagger = tagger.tagSentence(pTaggedSentence,
-                        true);
-                List<TaggedToken> taggedSentence = new ArrayList<TaggedToken>();
-                for (TaggedWord tw : outputFromTagger)
-                {
-                    TaggedToken token = new TaggedToken();
-                    token.tag = tw.tag();
-                    token.token = tw.word();
-                    taggedSentence.add(token);
-                    System.out.println(token);
-                }
                 
-
-                
-                // partial tagged text
-                List<TaggedToken> tokens = client.tag_partially_tagged_tokenized_sentence(sentence, "_");
-
-                for (TaggedToken tok : tokens)
+                List<List<String>> tokens = client.tokenize_text(sentence);
+                System.out.print(String.format("Tweet %d: ", i));
+                for (List<String> toks : tokens)
                 {
-                    System.out.println(tok.getToken() + " " + tok.getTag());
+                    for (String s : toks) {
+                        System.out.print(s + " ");
+                    }                    
                 }
-                
-                */
+                System.out.println();
+                i++;
 
             }
             in.close();

@@ -9,12 +9,14 @@ from thrift.protocol import TBinaryProtocol
 #from bs4 import UnicodeDammit
 #import re
 import sys
+from ftfy import fix_text
 
 
 # get command line arguments
 args = sys.argv[1:]
-if len(args) != 2:
-    sys.stderr.write('Usage: tokenizer_client.py <server> <port>\n')
+if len(args) != 3:
+    sys.stderr.write('Usage: tokenizer_client.py <server> <port> '
+    '<input-file>\n')
     sys.exit(2)
 else:
     server = args[0]
@@ -34,6 +36,13 @@ tokenized_sentences = ["Barack Hussein Obama II is the 44th and current Presiden
                        "$NUGT Reviews Updated Saturday, January 10, "
                        "2015 05:11:22 AM $FSLR $ECIG $PG $DRYS http://t.co/tfgDyq6nek"]
 
+ts1 = ["Here's The Extreme Productivity Philosophy Used By Facebook" \
+       " And PayPal. Specially useful in these distracting times. \n" \
+       "http://t.co/2yisx9Wk1P.",
+       "Here's The Extreme Productivity Philosophy Used By Facebook" \
+       " And PayPal. Specially useful in these distracting times. " \
+       "@stuff."]
+
 transport = TSocket.TSocket(server, port)
 transport = TTransport.TBufferedTransport(transport)
 protocol = TBinaryProtocol.TBinaryProtocol(transport)
@@ -42,14 +51,34 @@ client = StanfordCoreNLP.Client(protocol)
 transport.open()
 
 try:
-    for sentence in tokenized_sentences:
+    '''
+    for sentence in ts1:
         result = client.untokenize_sentence(sentence.split(" "))
         print result
         result = client.tokenize_text(result)
         print result
         print
+    '''
+    
+    with open(args[2], 'r') as f:
+        
+        for line in f:
+            line = line.strip()
+            print 'Input: ', line
+            
+            line_unicode = line.decode('utf-8')
+
+            result = client.tokenize_text(line_unicode)
+            tokens = []
+            for elem in result:
+                tokens += elem
+            tokens_str = ', '.join(tokens)
+            print 'Output: ', tokens_str.encode('utf-8')
+            print
 
 except Exception as e:
     print e
 
 transport.close()
+
+
