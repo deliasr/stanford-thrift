@@ -64,11 +64,12 @@ public class StanfordCoreNLPClientTokenizer {
                 String sentence = in.readLine();
                 
                 List<List<String>> tokens = client.tokenize_text(sentence);
-                System.out.print(String.format("Tweet %d: ", i));
+                System.out.println(String.format("Tweet %d: %s", i, sentence));
+                System.out.print("Tokens:");
                 for (List<String> toks : tokens)
                 {
                     for (String s : toks) {
-                        System.out.print(s + " ");
+                        System.out.print(s + ", ");
                     }                    
                 }
                 System.out.println();

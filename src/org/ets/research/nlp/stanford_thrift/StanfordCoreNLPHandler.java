@@ -261,7 +261,8 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
     public List<List<String>> tokenize_text(String arbitraryText)
     {
         this.logger.info(String.format("tokenizing: %s", arbitraryText));
-        return tokenizer.tokenizeText(arbitraryText);
+        //return tokenizer.tokenizeText(arbitraryText);
+        return tokenizer.tokenizeTextUsingTokenizer(arbitraryText);
     }
     /* End Stanford Tokenizer methods */
 

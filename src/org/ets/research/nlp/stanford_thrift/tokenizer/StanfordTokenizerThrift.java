@@ -20,14 +20,18 @@
 
 package org.ets.research.nlp.stanford_thrift.tokenizer;
 
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
+import edu.stanford.nlp.ling.HasWord;
+import edu.stanford.nlp.pipeline.TokenizerAnnotator;
+import edu.stanford.nlp.process.DocumentPreprocessor;
+import edu.stanford.nlp.process.PTBTokenizer;
+import edu.stanford.nlp.process.Tokenizer;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import edu.stanford.nlp.ling.HasWord;
-import edu.stanford.nlp.process.DocumentPreprocessor;
-import edu.stanford.nlp.process.PTBTokenizer;
 
 public class StanfordTokenizerThrift 
 {
@@ -46,8 +50,11 @@ public class StanfordTokenizerThrift
 		
     	DocumentPreprocessor preprocess = new DocumentPreprocessor(new StringReader(arbitraryText));
     	Iterator<List<HasWord>> foundSentences = preprocess.iterator();
+        int i = 0;
     	while (foundSentences.hasNext())
     	{
+            System.out.println(String.format("sentence %d", i));
+            i++;
     		List<HasWord> tokenizedSentence = foundSentences.next();
     		List<String> tokenizedSentenceAsListOfStrings = new ArrayList<String>();
     		for (HasWord w : tokenizedSentence)
@@ -59,4 +66,26 @@ public class StanfordTokenizerThrift
     	
     	return tokenizedSentences;
 	}
+
+    public List<List<String>> tokenizeTextUsingTokenizer(String arbitraryText)
+    {
+
+        TokenizerAnnotator ta = new TokenizerAnnotator();
+
+        Tokenizer<CoreLabel> tokenizer = ta.getTokenizer(new StringReader
+                (arbitraryText));
+        
+        List<CoreLabel> tokens = tokenizer.tokenize();
+        
+        List<List<String>> tokenizedSentences = new ArrayList<List<String>>();
+
+        List<String> tokensList = new ArrayList<String>();
+        for (CoreLabel token : tokens) {
+            String word = token.get(TextAnnotation.class);
+            tokensList.add(word);
+        }
+        tokenizedSentences.add(tokensList);
+        
+        return tokenizedSentences;
+    }
 }
