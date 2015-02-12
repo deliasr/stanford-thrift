@@ -160,24 +160,13 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
     }
 
     public List<NamedEntity> get_entities_from_pos_tokens(
-            List<TaggedToken> tokens) throws TApplicationException
-    {
-        /*StringBuilder tokensStr = new StringBuilder();
-        
-        for (TaggedToken t : tokens) {
-            tokensStr.append(t.getToken());
-            tokensStr.append(" ");
-        }
+            List<TaggedToken> tokens) throws TApplicationException {
 
         this.logger.info(String.format("getting entities for pos tagged " +
-                "tokens: %s", tokensStr.toString()));
-        */
-        
-        List<NamedEntity> ne = ner.getNamedEntitiesFromPosTokens(tokens);
-        
-        //return ner.getNamedEntitiesFromPosTokens(tokens);
-        
-        return ne;
+                "tokens: %s", tokens.toString()));
+
+        return ner.getNamedEntitiesFromPosTokens(tokens);
+
     }
 
     public List<NamedEntity> get_entities_from_trees(List<String> trees)
@@ -249,8 +238,8 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
     }
 
     public List<TaggedToken> tag_partially_tagged_tokens(List<TaggedToken> ptaggedTokens) throws TException {
-        /*this.logger.info(String.format("tagging partially tagged: %s",
-                StringUtils.join(ptaggedTokens)));*/
+        this.logger.info(String.format("tagging partially tagged: %s",
+                StringUtils.join(ptaggedTokens)));
         return tagger.tag_partially_tagged_tokens(ptaggedTokens);
     }
 

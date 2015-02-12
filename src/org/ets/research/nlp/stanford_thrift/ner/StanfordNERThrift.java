@@ -77,23 +77,7 @@ public class StanfordNERThrift
 		ner.annotate(annotation);
 		List<CoreMap> sentenceMap = annotation.get(CoreAnnotations.SentencesAnnotation.class);
 
-        /*
-        for(CoreMap sentence: sentenceMap) {
-            // traversing the words in the current sentence
-            // a CoreLabel is a CoreMap with additional token-specific methods
-            for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
-                // this is the text of the token
-                String word = token.get(TextAnnotation.class);
-                // this is the POS tag of the token
-                String pos = token.get(PartOfSpeechAnnotation.class);
-                // this is the NER label of the token
-                String ne = token.get(NamedEntityTagAnnotation.class);
-                
-                System.out.println(word + " " + pos + " " + ne);
-            }
-        }
-        */
-		return toNamedEntityObjects(sentenceMap);
+        return toNamedEntityObjects(sentenceMap);
 	}
 	
 	public Annotation annotateForNamedEntities(Annotation annotation)
