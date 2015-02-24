@@ -48,11 +48,13 @@ service StanfordCoreNLP
     list<list<TaggedToken>> tag_text(1:string untokenizedText),
     list<TaggedToken> tag_tokenized_sentence(1:list<string> tokenizedSentence),
     list<TaggedToken> tag_partially_tagged_tokenized_sentence(1:list<string>
-    ptaggedtokenizedSentence, 2:string divider),
+    pTaggedTokenizedSentence, 2:string divider),
     list<TaggedToken> tag_partially_tagged_tokens(list<TaggedToken>
-        ptaggedTokens),
+        pTaggedTokens),
     list<TaggedToken> tag_partially_tagged_sentence(1:string ptaggedSentence, 2:string divider),
     // end of pos tagging methods
+    list<TaggedToken> lemmatize_pos_tagged_tokens(list<TaggedToken> 
+    pTaggedToken)
     string untokenize_sentence(1:list<string> sentenceTokens),
     list<list<string>> tokenize_text(1:string arbitraryText),
     ParseTree sr_parse_tagged_sentence(1:string taggedSentence, 2:list<string> outputFormat, 3:string divider),

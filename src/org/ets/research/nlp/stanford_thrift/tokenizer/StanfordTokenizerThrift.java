@@ -20,13 +20,18 @@
 
 package org.ets.research.nlp.stanford_thrift.tokenizer;
 
+import CoreNLP.TaggedToken;
+import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.HasWord;
+import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.TokenizerAnnotator;
 import edu.stanford.nlp.process.DocumentPreprocessor;
 import edu.stanford.nlp.process.PTBTokenizer;
 import edu.stanford.nlp.process.Tokenizer;
+import edu.stanford.nlp.util.CoreMap;
+import org.ets.research.nlp.stanford_thrift.general.CoreNLPThriftUtil;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -35,8 +40,11 @@ import java.util.List;
 
 public class StanfordTokenizerThrift 
 {
+    private TokenizerAnnotator ta;
+    
 	public StanfordTokenizerThrift()
 	{
+        ta = new TokenizerAnnotator();
 	}
 	
 	public String untokenizeSentence(List<String> sentenceTokens)
@@ -70,17 +78,17 @@ public class StanfordTokenizerThrift
     public List<List<String>> tokenizeTextUsingTokenizer(String arbitraryText)
     {
 
-        TokenizerAnnotator ta = new TokenizerAnnotator();
+        Annotation annotation = new Annotation(arbitraryText);
+        
+        ta.annotate(annotation);
 
-        Tokenizer<CoreLabel> tokenizer = ta.getTokenizer(new StringReader
-                (arbitraryText));
+        List<CoreLabel> tokens = annotation.get(CoreAnnotations.TokensAnnotation
+                .class);
         
-        List<CoreLabel> tokens = tokenizer.tokenize();
-        
+        // the output
         List<List<String>> tokenizedSentences = new ArrayList<List<String>>();
-
         List<String> tokensList = new ArrayList<String>();
-        for (CoreLabel token : tokens) {
+        for (CoreLabel token: tokens) {
             String word = token.get(TextAnnotation.class);
             tokensList.add(word);
         }
