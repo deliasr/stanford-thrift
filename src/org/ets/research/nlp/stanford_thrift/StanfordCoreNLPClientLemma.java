@@ -1,8 +1,5 @@
-package org.ets.research.nlp.stanford_thrift;
+package ets.research.nlp.stanford_thrift;
 
-import CoreNLP.NamedEntity;
-import CoreNLP.StanfordCoreNLP;
-import CoreNLP.TaggedToken;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
@@ -12,7 +9,10 @@ import org.apache.thrift.transport.TTransport;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StanfordCoreNLPClientNE {
+/**
+ * Created by delia on 18/02/15.
+ */
+public class StanfordCoreNLPClientLemma {
 
     public static void main(String [] args) throws Exception {
 
@@ -39,7 +39,7 @@ public class StanfordCoreNLPClientNE {
             transport.open();
 
             TProtocol protocol = new TBinaryProtocol(transport);
-            StanfordCoreNLP.Client client = new StanfordCoreNLP.Client(protocol);
+            CoreNLP.StanfordCoreNLP.Client client = new CoreNLP.StanfordCoreNLP.Client(protocol);
 
             perform(client);
 
@@ -49,29 +49,29 @@ public class StanfordCoreNLPClientNE {
         }
     }
 
-    private static void perform(StanfordCoreNLP.Client client) throws Exception
+    private static void perform(CoreNLP.StanfordCoreNLP.Client client) throws Exception
     {
         try {
 
-            List<TaggedToken> tokens = new ArrayList<TaggedToken>();
-                
-            tokens.add(new TaggedToken("NNP", "Diane"));
-            tokens.add(new TaggedToken("NNP", "New"));
-            tokens.add(new TaggedToken("NNP", "Jersey"));
+            List<CoreNLP.TaggedToken> tokens = new ArrayList<CoreNLP.TaggedToken>();
+
+            tokens.add(new CoreNLP.TaggedToken("NNP", "Societe"));
+            tokens.add(new CoreNLP.TaggedToken("NNP", "Generale"));
+            tokens.add(new CoreNLP.TaggedToken("VBZ", "acquires"));
+            tokens.add(new CoreNLP.TaggedToken("NN", "stake"));
 
             //tokens.add(new TaggedToken("VB", "talks"));
 
-            List<NamedEntity> entities =
-                client.get_entities_from_pos_tokens(tokens);
-                
-            for (NamedEntity e : entities) {
-                System.out.println(e.getEntity() + " " + e.getTag());
+            List<CoreNLP.TaggedToken> lemmas =
+                    client.lemmatize_pos_tagged_tokens(tokens);
+
+            for (CoreNLP.TaggedToken l : lemmas) {
+                System.out.println(l.getToken() + " " + l.getTag());
             }
-                
+
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
 }

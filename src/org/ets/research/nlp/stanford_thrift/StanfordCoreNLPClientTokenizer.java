@@ -1,19 +1,21 @@
 package org.ets.research.nlp.stanford_thrift;
 
-import CoreNLP.NamedEntity;
 import CoreNLP.StanfordCoreNLP;
-import CoreNLP.TaggedToken;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 
-public class StanfordCoreNLPClientNE {
-
+/**
+ * Created by delia on 11/02/15.
+ */
+public class StanfordCoreNLPClientTokenizer {
     public static void main(String [] args) throws Exception {
 
         String server = "";
@@ -41,7 +43,7 @@ public class StanfordCoreNLPClientNE {
             TProtocol protocol = new TBinaryProtocol(transport);
             StanfordCoreNLP.Client client = new StanfordCoreNLP.Client(protocol);
 
-            perform(client);
+            perform(client, inputFilename, configFilePath);
 
             transport.close();
         } catch (TException x) {
@@ -49,29 +51,35 @@ public class StanfordCoreNLPClientNE {
         }
     }
 
-    private static void perform(StanfordCoreNLP.Client client) throws Exception
+    private static void perform(StanfordCoreNLP.Client client, String
+            inputFilename, String configFilePath) throws Exception
     {
+        FileReader infile = null;
+
         try {
-
-            List<TaggedToken> tokens = new ArrayList<TaggedToken>();
+            infile = new FileReader(inputFilename);
+            BufferedReader in = new BufferedReader(infile);
+            int i = 0;
+            while (in.ready()) {
+                String sentence = in.readLine();
                 
-            tokens.add(new TaggedToken("NNP", "Diane"));
-            tokens.add(new TaggedToken("NNP", "New"));
-            tokens.add(new TaggedToken("NNP", "Jersey"));
+                List<List<String>> tokens = client.tokenize_text(sentence);
+                System.out.println(String.format("Tweet %d: %s", i, sentence));
+                System.out.print("Tokens:");
+                for (List<String> toks : tokens)
+                {
+                    for (String s : toks) {
+                        System.out.print(s + ", ");
+                    }                    
+                }
+                System.out.println();
+                i++;
 
-            //tokens.add(new TaggedToken("VB", "talks"));
-
-            List<NamedEntity> entities =
-                client.get_entities_from_pos_tokens(tokens);
-                
-            for (NamedEntity e : entities) {
-                System.out.println(e.getEntity() + " " + e.getTag());
             }
-                
+            in.close();
         }
-        catch (Exception e) {
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
 }

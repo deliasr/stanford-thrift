@@ -20,19 +20,31 @@
 
 package org.ets.research.nlp.stanford_thrift.tokenizer;
 
+import CoreNLP.TaggedToken;
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
+import edu.stanford.nlp.ling.HasWord;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.TokenizerAnnotator;
+import edu.stanford.nlp.process.DocumentPreprocessor;
+import edu.stanford.nlp.process.PTBTokenizer;
+import edu.stanford.nlp.process.Tokenizer;
+import edu.stanford.nlp.util.CoreMap;
+import org.ets.research.nlp.stanford_thrift.general.CoreNLPThriftUtil;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import edu.stanford.nlp.ling.HasWord;
-import edu.stanford.nlp.process.DocumentPreprocessor;
-import edu.stanford.nlp.process.PTBTokenizer;
-
 public class StanfordTokenizerThrift 
 {
+    private TokenizerAnnotator ta;
+    
 	public StanfordTokenizerThrift()
 	{
+        ta = new TokenizerAnnotator();
 	}
 	
 	public String untokenizeSentence(List<String> sentenceTokens)
@@ -46,8 +58,11 @@ public class StanfordTokenizerThrift
 		
     	DocumentPreprocessor preprocess = new DocumentPreprocessor(new StringReader(arbitraryText));
     	Iterator<List<HasWord>> foundSentences = preprocess.iterator();
+        int i = 0;
     	while (foundSentences.hasNext())
     	{
+            System.out.println(String.format("sentence %d", i));
+            i++;
     		List<HasWord> tokenizedSentence = foundSentences.next();
     		List<String> tokenizedSentenceAsListOfStrings = new ArrayList<String>();
     		for (HasWord w : tokenizedSentence)
@@ -59,4 +74,26 @@ public class StanfordTokenizerThrift
     	
     	return tokenizedSentences;
 	}
+
+    public List<List<String>> tokenizeTextUsingTokenizer(String arbitraryText)
+    {
+
+        Annotation annotation = new Annotation(arbitraryText);
+        
+        ta.annotate(annotation);
+
+        List<CoreLabel> tokens = annotation.get(CoreAnnotations.TokensAnnotation
+                .class);
+        
+        // the output
+        List<List<String>> tokenizedSentences = new ArrayList<List<String>>();
+        List<String> tokensList = new ArrayList<String>();
+        for (CoreLabel token: tokens) {
+            String word = token.get(TextAnnotation.class);
+            tokensList.add(word);
+        }
+        tokenizedSentences.add(tokensList);
+        
+        return tokenizedSentences;
+    }
 }

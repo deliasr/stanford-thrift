@@ -36,6 +36,7 @@ import org.ets.research.nlp.stanford_thrift.parser.StanfordSRParserThrift;
 import org.ets.research.nlp.stanford_thrift.tagger.StanfordTaggerThrift;
 import org.ets.research.nlp.stanford_thrift.tokenizer.StanfordTokenizerThrift;
 import org.ets.research.nlp.stanford_thrift.tregex.StanfordTregexThrift;
+import org.ets.research.nlp.stanford_thrift.lemmatizer.StanfordLemmatizerThrift;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +56,7 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
     private StanfordTaggerThrift tagger;
     private StanfordTokenizerThrift tokenizer;
     private StanfordSRParserThrift srparser;
+    private StanfordLemmatizerThrift lemmatizer;
 
     public StanfordCoreNLPHandler(String configFilePath) throws Exception
     {
@@ -97,6 +99,10 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
             this.logger.info("Initializing shift-reduce org.ets.research.nlp.stanford_thrift.parser...");
             srparser = new StanfordSRParserThrift(config.getSRParserModel());
         }
+        
+        this.logger.info("Initializing Lemmatizer...");
+        lemmatizer = new StanfordLemmatizerThrift();
+        
         this.logger.info("Initializing finished...");
     }
 
@@ -160,12 +166,13 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
     }
 
     public List<NamedEntity> get_entities_from_pos_tokens(
-            List<TaggedToken> tokens) throws TApplicationException
-    {
-        this.logger.info("getting entities for pos tagged tokens: %s",
-                StringUtils.join(tokens));
-        
+            List<TaggedToken> tokens) throws TApplicationException {
+
+        this.logger.info(String.format("getting entities for pos tagged " +
+                "tokens: %s", tokens.toString()));
+
         return ner.getNamedEntitiesFromPosTokens(tokens);
+
     }
 
     public List<NamedEntity> get_entities_from_trees(List<String> trees)
@@ -231,25 +238,43 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
     }
 
     public List<TaggedToken> tag_partially_tagged_tokenized_sentence(
-            List<String> ptaggedtokenizedSentence, String divider) throws TException {
-        this.logger.info(String.format("tagging partially tagged: %s", StringUtils.join(ptaggedtokenizedSentence)));
-        return tagger.tag_partially_tagged_tokenized_sentence(ptaggedtokenizedSentence, divider);
+            List<String> pTaggedTokenizedSentence, String divider) throws 
+            TException {
+        this.logger.info(String.format("tagging partially tagged: %s", 
+                StringUtils.join(pTaggedTokenizedSentence)));
+        return tagger.tag_partially_tagged_tokenized_sentence
+                (pTaggedTokenizedSentence, divider);
     }
 
-    public List<TaggedToken> tag_partially_tagged_tokens(List<TaggedToken> ptaggedTokens) throws TException {
-        this.logger.info(String.format("tagging partially tagged: %s", StringUtils.join(ptaggedTokens)));
-        return tagger.tag_partially_tagged_tokens(ptaggedTokens);
+    public List<TaggedToken> tag_partially_tagged_tokens(List<TaggedToken> 
+                                                                 pTaggedTokens) throws TException {
+        this.logger.info(String.format("tagging partially tagged: %s",
+                StringUtils.join(pTaggedTokens)));
+        return tagger.tag_partially_tagged_tokens(pTaggedTokens);
     }
 
     public List<TaggedToken> tag_partially_tagged_sentence(
-            String ptaggedSentence, String divider) throws TException {
-        this.logger.info(String.format("tagging partially tagged: %s", ptaggedSentence));
-        return tagger.tag_partially_tagged_sentence (ptaggedSentence, divider);
+            String pTaggedSentence, String divider) throws TException {
+        this.logger.info(String.format("tagging partially tagged: %s", 
+                pTaggedSentence));
+        return tagger.tag_partially_tagged_sentence (pTaggedSentence, divider);
     }
 
     /* End Stanford Tagger methods */
 
+    
+    /* Begin Stanford Lemmatizer methods */
 
+    public List<TaggedToken> lemmatize_pos_tagged_tokens(List<TaggedToken> 
+                                                         pTaggedTokens)
+            throws TException {
+        this.logger.info(String.format("lemmatizing pos tagged: %s",
+                StringUtils.join(pTaggedTokens)));
+        return lemmatizer.lemmatize_pos_tagged_tokens(pTaggedTokens);
+    }
+    
+    /* End Stanford Lemmatizer methods */
+    
     /* Begin Stanford Tokenizer methods */
     public String untokenize_sentence(List<String> sentenceTokens)
     {
@@ -259,7 +284,9 @@ public class StanfordCoreNLPHandler implements StanfordCoreNLP.Iface
     public List<List<String>> tokenize_text(String arbitraryText)
     {
         this.logger.info(String.format("tokenizing: %s", arbitraryText));
-        return tokenizer.tokenizeText(arbitraryText);
+        //return tokenizer.tokenizeText(arbitraryText);
+        // use tokenizer from the process.Tokenizer class
+        return tokenizer.tokenizeTextUsingTokenizer(arbitraryText);
     }
     /* End Stanford Tokenizer methods */
 

@@ -76,12 +76,10 @@ public class CoreNLPThriftUtil
 		allSentences.set(CoreAnnotations.SentencesAnnotation.class,
 				adjustCharacterOffsets(sentences, true));
 
-        System.out.println("All sentences as annotation:" + allSentences);
-        
-		return allSentences;
+        return allSentences;
 	}
-
-	// Call this once for the first sentence worth of tokens,
+    
+    // Call this once for the first sentence worth of tokens,
 	// Call this again for each additional sentence worth of tokens,
 	// passing in that Annotation that was just returned from that first call.
 	// Otherwise pass in null as the second argument.
@@ -127,9 +125,7 @@ public class CoreNLPThriftUtil
 		allSentences.set(CoreAnnotations.SentencesAnnotation.class,
                 adjustCharacterOffsets(sentences, true));
 		
-        //System.out.println("All sentences as annotation:" + allSentences);
-
-		return allSentences;
+        return allSentences;
 	}
 
 	public static List<CoreMap> adjustCharacterOffsets(List<CoreMap> sentences, boolean setOriginalText)

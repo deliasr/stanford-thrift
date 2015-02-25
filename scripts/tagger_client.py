@@ -57,6 +57,7 @@ client = StanfordCoreNLP.Client(protocol)
 transport.open()
 
 try:
+    '''
     result = client.tag_text(arbitrary_text)
     for r in result:
         print r
@@ -83,6 +84,7 @@ try:
         print result
 
     print 'tag_partially_tagged_tokens result'
+    '''
 
     t1 = TaggedToken(token = 'Review', tag = 'NNP')
     t2 = TaggedToken(token = 'street', tag = None)

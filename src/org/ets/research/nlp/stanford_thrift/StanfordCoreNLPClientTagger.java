@@ -1,20 +1,13 @@
 package org.ets.research.nlp.stanford_thrift;
 // Generated code
-import CoreNLP.ParseTree;
 import CoreNLP.StanfordCoreNLP;
 import CoreNLP.TaggedToken;
-import edu.stanford.nlp.ling.TaggedWord;
-import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
-import org.ets.research.nlp.stanford_thrift.general.CoreNLPThriftUtil;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +40,7 @@ public class StanfordCoreNLPClientTagger {
             TProtocol protocol = new TBinaryProtocol(transport);
             StanfordCoreNLP.Client client = new StanfordCoreNLP.Client(protocol);
 
-            perform(client, inputFilename, configFilePath);
+            perform(client);
 
             transport.close();
         } catch (TException x) {
@@ -55,60 +48,27 @@ public class StanfordCoreNLPClientTagger {
         }
     }
 
-    private static void perform(StanfordCoreNLP.Client client, String
-            inputFilename, String configFilePath) throws Exception
+    private static void perform(StanfordCoreNLP.Client client) throws Exception
     {
-        FileReader infile = null;
-
         try {
-            infile = new FileReader(inputFilename);
-            BufferedReader in = new BufferedReader(infile);
-            while (in.ready()) {
-                String sentence = in.readLine();
 
-                // parse tree
-                List<ParseTree> trees = client.parse_text(sentence, null);
-                for (ParseTree tree : trees)
-                {
-                    System.out.println(tree.tree);
-                }
+            List<TaggedToken> tokens = new ArrayList<TaggedToken>();
 
-                List<TaggedWord> pTaggedSentence = CoreNLPThriftUtil
-                        .getListOfTaggedWordsFromTaggedSentence
-                                (sentence, "_");
+            tokens.add(new TaggedToken("NNP", "Diane"));
+            tokens.add(new TaggedToken(null, "lives"));
+            tokens.add(new TaggedToken(null, "in"));
+            tokens.add(new TaggedToken(null, "New"));
+            tokens.add(new TaggedToken(null, "Jersey"));
 
-                String taggerModel =
-                        "stanford-corenlp-3.4.1-models/" +
-                                "edu/stanford/nlp/models/pos-tagger/english" +
-                                "-left3words/english-left3words-distsim.tagger";
+            List<TaggedToken> pos_tokens =
+                    client.tag_partially_tagged_tokens(tokens);
 
-                MaxentTagger tagger = new MaxentTagger(taggerModel);
-                List<TaggedWord> outputFromTagger = tagger.tagSentence(pTaggedSentence,
-                        true);
-                List<TaggedToken> taggedSentence = new ArrayList<TaggedToken>();
-                for (TaggedWord tw : outputFromTagger)
-                {
-                    TaggedToken token = new TaggedToken();
-                    token.tag = tw.tag();
-                    token.token = tw.word();
-                    taggedSentence.add(token);
-                    System.out.println(token);
-                }
-
-                /*
-                // partial tagged text
-                List<TaggedToken> tokens = client.tag_partially_tagged_tokenized_sentence(sentence, "_");
-
-                for (TaggedToken tok : tokens)
-                {
-                    System.out.println(tok.getToken() + " " + tok.getTag());
-                }
-
-                */
+            for (TaggedToken t : pos_tokens) {
+                System.out.println(t.getToken() + " " + t.getTag());
             }
-            in.close();
+
         }
-        catch (IOException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
