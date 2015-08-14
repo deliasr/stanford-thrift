@@ -20,23 +20,20 @@
 
 package org.ets.research.nlp.stanford_thrift.tokenizer;
 
-import CoreNLP.TaggedToken;
 import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
+import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.HasWord;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.TokenizerAnnotator;
 import edu.stanford.nlp.process.DocumentPreprocessor;
 import edu.stanford.nlp.process.PTBTokenizer;
-import edu.stanford.nlp.process.Tokenizer;
-import edu.stanford.nlp.util.CoreMap;
-import org.ets.research.nlp.stanford_thrift.general.CoreNLPThriftUtil;
 
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 public class StanfordTokenizerThrift 
 {
@@ -44,7 +41,13 @@ public class StanfordTokenizerThrift
     
 	public StanfordTokenizerThrift()
 	{
-        ta = new TokenizerAnnotator();
+
+        Properties props = new Properties();
+        props.setProperty("tokenize.options",
+                "normalizeParentheses=false,normalizeOtherBrackets=false");
+        props.setProperty("tokenize.class", "PTBTokenizer");
+
+        ta = new TokenizerAnnotator(false, props);
 	}
 	
 	public String untokenizeSentence(List<String> sentenceTokens)

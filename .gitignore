@@ -10,3 +10,13 @@ src/CoreNLP
 build
 
 version
+
+backup/*
+
+target/*
+
+stanford-corenlp-*
+
+genpy*
+
+logs/*
