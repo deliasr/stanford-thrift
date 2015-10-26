@@ -44,7 +44,8 @@ public class StanfordTokenizerThrift
 
         Properties props = new Properties();
         props.setProperty("tokenize.options",
-                "normalizeParentheses=false,normalizeOtherBrackets=false");
+                "normalizeParentheses=false,normalizeOtherBrackets=false, " +
+                        "untokenizable=firstKeep");
         props.setProperty("tokenize.class", "PTBTokenizer");
 
         ta = new TokenizerAnnotator(false, props);
