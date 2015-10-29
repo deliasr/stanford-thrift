@@ -6,6 +6,7 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
+import org.ets.research.nlp.stanford_thrift.tokenizer.StanfordTokenizerThrift;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 public class StanfordCoreNLPClientTokenizer {
     public static void main(String [] args) throws Exception {
+
 
         String server = "";
         Integer port = 0;
@@ -49,6 +51,25 @@ public class StanfordCoreNLPClientTokenizer {
         } catch (TException x) {
             x.printStackTrace();
         }
+
+        tokenize();
+    }
+
+    private static void tokenize()
+    {
+        StanfordTokenizerThrift st = new StanfordTokenizerThrift();
+        List<List<String>> tokens = st.tokenizeTextUsingTokenizer("RT " +
+            "@kvngmerius_: fake eyelashes = " +
+            "iWeave by Apple, Inc. #❤️❤️❤️\uD83D\uDE2D❤️❤️❤️ @Puss_n_gold");
+
+        for (List<String> toks : tokens)
+        {
+            for (String s : toks) {
+                System.out.print(s + "| ");
+            }
+        }
+        System.out.println();
+
     }
 
     private static void perform(StanfordCoreNLP.Client client, String

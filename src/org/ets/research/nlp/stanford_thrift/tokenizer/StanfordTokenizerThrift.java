@@ -45,9 +45,8 @@ public class StanfordTokenizerThrift
         Properties props = new Properties();
         props.setProperty("tokenize.options",
                 "normalizeParentheses=false,normalizeOtherBrackets=false, " +
-                        "untokenizable=firstKeep");
+                        "untokenizable=firstKeep, normalizeCurrency=false");
         props.setProperty("tokenize.class", "PTBTokenizer");
-
         ta = new TokenizerAnnotator(false, props);
 	}
 	
@@ -83,7 +82,7 @@ public class StanfordTokenizerThrift
     {
 
         Annotation annotation = new Annotation(arbitraryText);
-        
+
         ta.annotate(annotation);
 
         List<CoreLabel> tokens = annotation.get(CoreAnnotations.TokensAnnotation
@@ -93,6 +92,7 @@ public class StanfordTokenizerThrift
         List<List<String>> tokenizedSentences = new ArrayList<List<String>>();
         List<String> tokensList = new ArrayList<String>();
         for (CoreLabel token: tokens) {
+            System.out.println(String.format("Token %s", token));
             String word = token.get(TextAnnotation.class);
             tokensList.add(word);
         }

@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 
 from corenlp import StanfordCoreNLP
 from corenlp.ttypes import *
@@ -10,6 +12,9 @@ from thrift.protocol import TBinaryProtocol
 #import re
 import sys
 from ftfy import fix_text
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 # get command line arguments
