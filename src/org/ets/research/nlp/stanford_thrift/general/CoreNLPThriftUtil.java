@@ -29,6 +29,7 @@ import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.ParserAnnotatorUtils;
 import edu.stanford.nlp.trees.EnglishGrammaticalStructureFactory;
+import edu.stanford.nlp.trees.GrammaticalStructure;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
 
@@ -67,7 +68,10 @@ public class CoreNLPThriftUtil
 			sentence.set(CoreAnnotations.TokenBeginAnnotation.class, tokenOffset);
 			tokenOffset += sentenceTokens.size();
 			sentence.set(CoreAnnotations.TokenEndAnnotation.class, tokenOffset);
-			ParserAnnotatorUtils.fillInParseAnnotations(false, true, new EnglishGrammaticalStructureFactory(), sentence, Tree.valueOf(tree));
+
+			ParserAnnotatorUtils.fillInParseAnnotations(false, true, new
+					EnglishGrammaticalStructureFactory(), sentence, Tree
+					.valueOf(tree), GrammaticalStructure.Extras.NONE);
 
 			sentences.add(sentence);
 		}
