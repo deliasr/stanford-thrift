@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 from corenlp import StanfordCoreNLP
 from corenlp.ttypes import *
 from thrift import Thrift
@@ -56,15 +55,6 @@ client = StanfordCoreNLP.Client(protocol)
 transport.open()
 
 try:
-    '''
-    for sentence in ts1:
-        result = client.untokenize_sentence(sentence.split(" "))
-        print result
-        result = client.tokenize_text(result)
-        print result
-        print
-    '''
-    
     with open(args[2], 'r') as f:
         
         for line in f:
@@ -85,5 +75,3 @@ except Exception as e:
     print e
 
 transport.close()
-
-

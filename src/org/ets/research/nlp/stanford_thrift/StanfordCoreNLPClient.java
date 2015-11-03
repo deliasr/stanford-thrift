@@ -74,7 +74,6 @@ public class StanfordCoreNLPClient {
                 {
                     System.out.println(tok.getToken() + " " + tok.getTag());
                 }
-
             }
             in.close();
         }

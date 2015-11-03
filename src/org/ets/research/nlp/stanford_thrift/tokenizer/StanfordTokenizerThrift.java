@@ -92,7 +92,7 @@ public class StanfordTokenizerThrift
         List<List<String>> tokenizedSentences = new ArrayList<List<String>>();
         List<String> tokensList = new ArrayList<String>();
         for (CoreLabel token: tokens) {
-            System.out.println(String.format("Token %s", token));
+            //System.out.println(String.format("Token %s", token));
             String word = token.get(TextAnnotation.class);
             tokensList.add(word);
         }
