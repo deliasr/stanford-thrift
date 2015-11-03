@@ -31,15 +31,17 @@ service StanfordCoreNLP
 {
     void ping(),
     oneway void zip(),
+    // parsing methods
     list<ParseTree> parse_text(1:string text, 2:list<string> outputFormat),
     ParseTree parse_tokens(1:list<string> tokens, 2:list<string> outputFormat),
     ParseTree parse_tagged_sentence(1:string taggedSentence, 2:list<string> outputFormat, 3:string divider),
-    // remove as it requires Java 8
-    //string lexicalize_parse_tree(1:string tree),
+    string lexicalize_parse_tree(1:string tree),
+    // named entity methods
     list<NamedEntity> get_entities_from_text(1:string text),
     list<NamedEntity> get_entities_from_tokens(1:list<string> tokens),
     list<NamedEntity> get_entities_from_pos_tokens(1:list<TaggedToken> tokens),
     list<NamedEntity> get_entities_from_trees(1:list<string> trees),
+    // coreference methods
     list<string> resolve_coreferences_in_text(1:string text),
     list<string> resolve_coreferences_in_tokenized_sentences(1:list<string> sentencesWithTokensSeparatedBySpace),
     list<string> resolve_coreferences_in_trees(1:list<string> trees),
@@ -51,7 +53,6 @@ service StanfordCoreNLP
     pTaggedTokenizedSentence, 2:string divider),
     list<TaggedToken> tag_partially_tagged_tokens(1:list<TaggedToken> pTaggedTokens),
     list<TaggedToken> tag_partially_tagged_sentence(1:string ptaggedSentence, 2:string divider),
-    // end of pos tagging methods
     list<TaggedToken> lemmatize_pos_tagged_tokens(1:list<TaggedToken> pTaggedToken)
     string untokenize_sentence(1:list<string> sentenceTokens),
     list<list<string>> tokenize_text(1:string arbitraryText),

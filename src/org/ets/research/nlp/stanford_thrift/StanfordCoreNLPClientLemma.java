@@ -55,10 +55,10 @@ public class StanfordCoreNLPClientLemma {
 
             List<CoreNLP.TaggedToken> tokens = new ArrayList<CoreNLP.TaggedToken>();
 
-            tokens.add(new CoreNLP.TaggedToken("NNP", "Societe"));
-            tokens.add(new CoreNLP.TaggedToken("NNP", "Generale"));
-            tokens.add(new CoreNLP.TaggedToken("VBZ", "acquires"));
-            tokens.add(new CoreNLP.TaggedToken("URL", "http://"));
+            tokens.add(new CoreNLP.TaggedToken("PRP", "I"));
+            tokens.add(new CoreNLP.TaggedToken("VB", "have"));
+            tokens.add(new CoreNLP.TaggedToken("RB", "just"));
+            tokens.add(new CoreNLP.TaggedToken("VBN", "looked"));
             
 
             //tokens.add(new TaggedToken("VB", "talks"));
