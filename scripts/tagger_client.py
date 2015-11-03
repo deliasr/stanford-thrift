@@ -86,9 +86,10 @@ try:
     print 'tag_partially_tagged_tokens result'
     '''
 
-    t1 = TaggedToken(token = 'Review', tag = 'NNP')
-    t2 = TaggedToken(token = 'street', tag = None)
-    tokens = [t1, t2]
+    t1 = TaggedToken(token = 'Here', tag = None)
+    t2 = TaggedToken(token = 'I', tag = None)
+    t3 = TaggedToken(token = 'am', tag = None)
+    tokens = [t1, t2, t3]
     result = client.tag_partially_tagged_tokens(tokens)
 
     print result
