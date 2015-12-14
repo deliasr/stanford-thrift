@@ -1,5 +1,7 @@
 package org.ets.research.nlp.stanford_thrift.test;
 
+import CoreNLP.StanfordCoreNLP;
+
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
