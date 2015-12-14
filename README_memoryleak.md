@@ -18,7 +18,7 @@ StanfordCoreNLPTest tweets.1000
 
 3. To test Stanford CoreNLP + Thrift
 
-start server: 
+a) start server: 
 
 ```Python
 scripts/start_server.sh 12345 2G scripts/config
@@ -26,7 +26,7 @@ scripts/start_server.sh 12345 2G scripts/config
 
 Usage: start_server.sh <port> <heapsize> <config file>
 
-start StanfordCoreNLPTokenizerTest: 
+b) start StanfordCoreNLPTokenizerTest: 
 
 ```Python
 StanfordCoreNLPTokenizerTest localhost 12345 tweets.1000 scripts/config
