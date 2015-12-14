@@ -50,7 +50,7 @@ public class StanfordCoreNLPTest {
 
         // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution
         Properties props = new Properties();
-        props.setProperty("annotators", "tokenize");
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
         int idx = 0;
@@ -80,6 +80,11 @@ public class StanfordCoreNLPTest {
                     .class)) {
                 // this is the text of the token
                 String word = token.get(CoreAnnotations.TextAnnotation.class);
+                // this is the POS tag of the token
+                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
+                // this is the NER label of the token
+                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
+
                 tweetList.add(word);
             }
 
