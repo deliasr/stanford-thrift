@@ -20,3 +20,7 @@ stanford-corenlp-*
 genpy*
 
 logs/*
+
+gen-java/*
+
+gen-py/*
