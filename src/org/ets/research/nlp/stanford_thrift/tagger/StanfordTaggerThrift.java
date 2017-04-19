@@ -23,7 +23,7 @@ package org.ets.research.nlp.stanford_thrift.tagger;
 import CoreNLP.TaggedToken;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.HasWord;
-import edu.stanford.nlp.ling.Sentence;
+import edu.stanford.nlp.ling.SentenceUtils;
 import edu.stanford.nlp.ling.TaggedWord;
 import edu.stanford.nlp.process.DocumentPreprocessor;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
@@ -63,7 +63,7 @@ public class StanfordTaggerThrift
 		// a single sentence worth of tokens
     	String[] tokenArray = new String[tokenizedSentence.size()];
     	tokenizedSentence.toArray(tokenArray);
-    	List<CoreLabel> crazyStanfordFormat = Sentence.toCoreLabelList(tokenArray);
+    	List<CoreLabel> crazyStanfordFormat = SentenceUtils.toCoreLabelList(tokenArray);
     	return tagSingleSentence(crazyStanfordFormat);
 	}
 

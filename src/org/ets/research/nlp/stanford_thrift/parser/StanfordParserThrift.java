@@ -23,7 +23,7 @@ package org.ets.research.nlp.stanford_thrift.parser;
 import CoreNLP.ParseTree;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.HasWord;
-import edu.stanford.nlp.ling.Sentence;
+import edu.stanford.nlp.ling.SentenceUtils;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.pipeline.DefaultPaths;
 import edu.stanford.nlp.process.DocumentPreprocessor;
@@ -105,7 +105,7 @@ public class StanfordParserThrift
             // a single sentence worth of tokens
             String[] tokenArray = new String[tokens.size()];
             tokens.toArray(tokenArray);
-            List<CoreLabel> crazyStanfordFormat = Sentence.toCoreLabelList(tokenArray);
+            List<CoreLabel> crazyStanfordFormat = SentenceUtils.toCoreLabelList(tokenArray);
             Tree parseTree = parser.apply(crazyStanfordFormat);
             return new ParseTree(ParserUtil.TreeObjectToString(parseTree, treePrinter), parseTree.score());
         }
