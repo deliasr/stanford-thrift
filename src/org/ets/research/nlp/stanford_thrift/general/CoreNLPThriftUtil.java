@@ -32,6 +32,7 @@ import edu.stanford.nlp.trees.EnglishGrammaticalStructureFactory;
 import edu.stanford.nlp.trees.GrammaticalStructure;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.util.Generics;
 
 import java.util.ArrayList;
 import java.util.List;
