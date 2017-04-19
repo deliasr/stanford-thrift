@@ -59,7 +59,7 @@ public class CoreNLPThriftUtil
 			String[] tokensArr = new String[tokens.size()];
 			tokens.toArray(tokensArr);
 			List<CoreLabel> sentenceTokens = SentenceUtils.toCoreLabelList(tokensArr);
-			String originalText = Sentence.listToString(tokens);
+			String originalText = SentenceUtils.listToString(tokens);
 
 			CoreMap sentence = new Annotation(originalText);
 			sentence.set(CharacterOffsetBeginAnnotation.class, 0);
@@ -76,7 +76,7 @@ public class CoreNLPThriftUtil
 			sentences.add(sentence);
 		}
 
-		Annotation allSentences = new Annotation(Sentence.listToString(allTokens));
+		Annotation allSentences = new Annotation(SentenceUtils.listToString(allTokens));
 		allSentences.set(CoreAnnotations.SentencesAnnotation.class,
 				adjustCharacterOffsets(sentences, true));
 
@@ -104,7 +104,7 @@ public class CoreNLPThriftUtil
         
         
 		List<CoreLabel> sentenceTokens = SentenceUtils.toCoreLabelList(tokensArr);
-		String originalText = Sentence.listToString(tokens);
+		String originalText = SentenceUtils.listToString(tokens);
 
 		CoreMap sentence = new Annotation(originalText);
 		sentence.set(CharacterOffsetBeginAnnotation.class, 0);
@@ -125,7 +125,7 @@ public class CoreNLPThriftUtil
         
 		sentences.add(sentence);
 
-		allSentences = new Annotation(Sentence.listToString(tokens));
+		allSentences = new Annotation(SentenceUtils.listToString(tokens));
 		allSentences.set(CoreAnnotations.SentencesAnnotation.class,
                 adjustCharacterOffsets(sentences, true));
 		
