@@ -68,10 +68,12 @@ public class CoreNLPThriftUtil
 			sentence.set(CoreAnnotations.TokenBeginAnnotation.class, tokenOffset);
 			tokenOffset += sentenceTokens.size();
 			sentence.set(CoreAnnotations.TokenEndAnnotation.class, tokenOffset);
+			
+			List<Tree> trees = Generics.newArrayList(1);
+        	trees.add(Tree .valueOf(tree));
 
 			ParserAnnotatorUtils.fillInParseAnnotations(false, true, new
-					EnglishGrammaticalStructureFactory(), sentence, Tree
-					.valueOf(tree), GrammaticalStructure.Extras.NONE);
+					EnglishGrammaticalStructureFactory(), sentence, trees, GrammaticalStructure.Extras.NONE);
 
 			sentences.add(sentence);
 		}
